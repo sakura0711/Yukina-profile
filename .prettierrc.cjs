@@ -1,9 +1,10 @@
 module.exports = {
+    "plugins": ["prettier-plugin-tailwindcss"],
     tabWidth: 4,                // 使用4個空格縮排
     semi: false,                 // 程式碼結尾是否加分號
     trailingComma: 'none',      // 程式碼結尾不需要逗號
     singleQuote: true,           // 是否使用單引號
-    printWidth: 100,            // 超過多少字元強制換行
+    printWidth: 120,            // 超過多少字元強制換行
     arrowParens: 'avoid',       // 單一參數的箭頭函數不加括號x => x
     bracketSpacing: true,        // 物件大括號內兩邊是否加空格{ a: 0 }
 
