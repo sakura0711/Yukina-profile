@@ -15,7 +15,7 @@ git pull
 echo -e "${YELLOW}> 同步 Nuxt 檔案 ============================================${RESET}"
 sudo chown -R sakura:sakura /mnt/smbshare/yukina-profile/.output
 sudo chmod -R 777 /mnt/smbshare/yukina-profile/.output
-sudo rsync -avh --delete /mnt/smbshare/yukina-profile/.output/. /var/www/nuxt/
+sudo rsync -a --quiet --stats --delete /mnt/smbshare/yukina-profile/.output/. /var/www/nuxt/
 
 echo -e "${GREEN}> 重啟 PM2 Nuxt 應用 ==========================================${RESET}"
 pm2 delete nuxt-app
