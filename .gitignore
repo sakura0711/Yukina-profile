@@ -1,5 +1,4 @@
 # Nuxt dev/build outputs
-# .output
 .data
 .nuxt
 .nitro
@@ -22,3 +21,7 @@ logs
 .env
 .env.*
 !.env.example
+
+# 允許 .output 資料夾及其所有內容
+!.output/
+!.output/**
