@@ -21,8 +21,16 @@ echo -e "${GREEN}> 重啟 PM2 Nuxt 應用 ======================================
 pm2 delete nuxt-app
 pm2 start /var/www/nuxt/server/index.mjs --name nuxt-app
 pm2 save
+# echo -e "${GREEN}> 重啟 PM2 Nuxt 應用 ==========================================${RESET}"
+# if sudo -u sakura pm2 list | grep -q "nuxt-app"; then
+ #   sudo -u sakura pm2 reload nuxt-app --update-env || { echo -e "${RED}pm2 reload 失敗${RESET}"; exit 1; }
+#else
+#     sudo -u sakura pm2 start /var/www/nuxt/server/index.mjs --name nuxt-app || { echo -e "${RED}pm2 start 失敗${RESET}"; exit 1; }
+# fi
+# sudo -u sakura pm2 save
 
 echo -e "${CYAN}> 重新啟動 Nginx ===============================================${RESET}"
 sudo systemctl restart nginx
 
 echo -e "${GREEN}> 部署完成！===================================================${RESET}"
+
