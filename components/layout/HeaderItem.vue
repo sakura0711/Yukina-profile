@@ -26,39 +26,72 @@ onUnmounted(() => {
 <template>
     <nav
         :class="[
-            'fixed left-0 top-0 flex w-full items-center justify-between px-6 py-4 transition-all duration-300 md:px-10',
-            isScrolled ? 'bg-white shadow-md' : 'bg-gray-100'
+            'fixed left-0 top-0 flex w-full items-center justify-around px-6 py-4 transition-all duration-300 max-2xl:justify-between md:px-10'
         ]"
     >
         <!-- Logo -->
-        <nuxt-link to="/" class="text-2xl font-bold text-blue-500">SakuraYukina</nuxt-link>
+        <nuxt-link to="/">
+            <p>
+                <b class="text-2xl font-bold">🌸</b>
+                <s
+                    class="bg-gradient-to-r from-red-300 via-pink-400 via-purple-400 to-blue-400 bg-clip-text text-2xl font-bold text-transparent"
+                >
+                    落櫻ゆきな</s
+                >
+            </p></nuxt-link
+        >
+
+        <!-- 桌機版選單 -->
+        <div class="text-bold hidden gap-4 md:flex">
+            <div
+                class="relative px-2 py-1 text-lg font-bold text-cyan-600 transition-all duration-300"
+                style="border-right: 4px double #ced2d9"
+            >
+                <nuxt-link
+                    v-for="(item, index) in [
+                        { to: '/introduce', text: '簡介' },
+                        { to: '/project', text: '技能樹' },
+                        { to: '/about', text: '奇怪的作品' }
+                    ]"
+                    :key="index"
+                    :to="item.to"
+                    class="px-3 hover:text-blue-500"
+                >
+                    {{ item.text }}
+                </nuxt-link>
+            </div>
+
+            <div class="flex items-center justify-between gap-4 text-zinc-600">
+                <a href="https://github.com/sakura0711" class="flex items-center justify-center gap-2" target="_blank">
+                    <Icon name="grommet-icons:github" size="1.5em" />
+                    <!-- <i>GitHub</i> -->
+                </a>
+                <a
+                    href="https://discordapp.com/users/565550082016149515"
+                    class="flex items-center justify-center gap-2"
+                    target="_blank"
+                >
+                    <Icon name="ic:twotone-discord" size="1.6em" />
+                    <!-- <i>Discord</i> -->
+                </a>
+                <a
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=testuseroozx@gmail.com&su=&body="
+                    target="_blank"
+                    class="flex items-center justify-center gap-2"
+                >
+                    <Icon name="bx:bxl-gmail" size="1.6em" />
+                    <!-- <i>Gmail</i> -->
+                </a>
+            </div>
+        </div>
 
         <!-- 漢堡選單按鈕（手機版） -->
         <button class="text-3xl md:hidden" @click="toggleMenu">☰</button>
 
-        <!-- 桌機版選單 -->
-        <div class="hidden gap-8 text-lg md:flex">
-            <nuxt-link
-                v-for="(item, index) in [
-                    { to: '/introduce', text: 'Intro' },
-                    { to: '/project', text: 'Project' },
-                    { to: '/about', text: 'Contact Us' }
-                ]"
-                :key="index"
-                :to="item.to"
-                class="relative px-4 py-2 transition-all duration-300 hover:text-blue-500"
-            >
-                {{ item.text }}
-                <span
-                    class="absolute bottom-0 left-1/2 h-0.5 w-0 bg-blue-500 transition-all duration-300 group-hover:left-0 group-hover:w-full"
-                ></span>
-            </nuxt-link>
-        </div>
-
         <!-- 手機版選單 -->
         <div
             v-if="isOpen"
-            class="absolute left-0 top-16 flex w-full flex-col items-center gap-6 bg-white py-4 shadow-md transition-all duration-300 md:hidden"
+            class="absolute left-0 top-16 flex w-full flex-col items-center gap-6 bg-white py-4 text-cyan-600 shadow-md transition-all duration-300 md:hidden"
         >
             <nuxt-link
                 v-for="(item, index) in [
