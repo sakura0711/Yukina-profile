@@ -50,8 +50,8 @@ onUnmounted(() => {
                 <nuxt-link
                     v-for="(item, index) in [
                         { to: '/introduce', text: '簡介' },
-                        { to: '/project', text: '技能樹' },
-                        { to: '/about', text: '奇怪的作品' }
+                        { to: '/about', text: '技能樹' },
+                        { to: '/project', text: '奇怪的作品' }
                     ]"
                     :key="index"
                     :to="item.to"
@@ -95,9 +95,9 @@ onUnmounted(() => {
         >
             <nuxt-link
                 v-for="(item, index) in [
-                    { to: '/introduce', text: 'Intro' },
-                    { to: '/project', text: 'Project' },
-                    { to: '/about', text: 'Contact Us' }
+                    { to: '/introduce', text: '簡介' },
+                    { to: '/about', text: '技能樹' },
+                    { to: '/project', text: '奇怪的作品' }
                 ]"
                 :key="index"
                 :to="item.to"

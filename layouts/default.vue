@@ -9,7 +9,7 @@
         <slot></slot>
 
         <!-- footer 固定 -->
-        <LayoutFooterItem class="fixed bottom-0 left-0 z-50 w-full"></LayoutFooterItem>
+        <!-- <LayoutFooterItem class="fixed bottom-0 left-0 z-50 w-full"></LayoutFooterItem> -->
     </div>
 </template>
 
