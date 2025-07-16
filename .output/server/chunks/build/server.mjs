@@ -1,7 +1,5 @@
-import { unref, inject, hasInjectionContext, getCurrentInstance, version, defineAsyncComponent, defineComponent, h, computed, ref, provide, shallowReactive, watch, Suspense, Fragment, createApp, toRef, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, reactive, effectScope, shallowRef, isReadonly, isRef, isShallow, isReactive, toRaw, mergeProps, getCurrentScope, withCtx, nextTick, useSSRContext } from 'vue';
-import { k as klona, l as defuFn, f as createError$1, m as hasProtocol, n as isScriptProtocol, o as joinURL, w as withQuery, q as sanitizeStatusCode, r as getContext, $ as $fetch$1, v as baseURL, x as createHooks, y as toRouteMatcher, z as createRouter$1, A as defu } from '../_/nitro.mjs';
-import { getActiveHead, CapoPlugin } from 'unhead';
-import { defineHeadPlugin } from '@unhead/shared';
+import { hasInjectionContext, getCurrentInstance, defineAsyncComponent, defineComponent, h, inject, computed, unref, shallowRef, provide, shallowReactive, ref, Suspense, Fragment, createApp, toRef, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, reactive, effectScope, isReadonly, isRef, isShallow, isReactive, toRaw, mergeProps, getCurrentScope, withCtx, nextTick, useSSRContext } from 'vue';
+import { l as createError$1, y as klona, z as defuFn, A as hasProtocol, B as isScriptProtocol, C as joinURL, D as withQuery, E as sanitizeStatusCode, F as getContext, $ as $fetch$1, G as baseURL, H as createHooks, I as executeAsync, J as toRouteMatcher, K as createRouter$1, L as defu } from '../_/nitro.mjs';
 import { useRoute as useRoute$1, RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
 import { _api, disableCache, addAPIProvider, setCustomIconsLoader } from '@iconify/vue';
 import { ssrRenderSuspense, ssrRenderComponent, ssrRenderVNode, ssrRenderAttrs } from 'vue/server-renderer';
@@ -13,6 +11,10 @@ import 'node:fs';
 import 'node:url';
 import '@iconify/utils';
 import 'consola';
+import 'unhead/server';
+import 'unhead/utils';
+import 'unhead/plugins';
+import 'vue-bundle-renderer/runtime';
 import 'node:path';
 import 'node:crypto';
 
@@ -21,8 +23,10 @@ if (!globalThis.$fetch) {
     baseURL: baseURL()
   });
 }
+if (!("global" in globalThis)) {
+  globalThis.global = globalThis;
+}
 const appLayoutTransition = false;
-const appPageTransition = false;
 const nuxtLinkDefaults = { "componentName": "NuxtLink" };
 const asyncDataDefaults = { "value": null, "errorValue": null, "deep": true };
 const appId = "nuxt-app";
@@ -42,7 +46,7 @@ function createNuxtApp(options) {
     globalName: "nuxt",
     versions: {
       get nuxt() {
-        return "3.15.4";
+        return "3.17.7";
       },
       get vue() {
         return nuxtApp.vueApp.version;
@@ -140,20 +144,20 @@ async function applyPlugin(nuxtApp, plugin2) {
 }
 async function applyPlugins(nuxtApp, plugins2) {
   var _a, _b, _c, _d;
-  const resolvedPlugins = [];
+  const resolvedPlugins = /* @__PURE__ */ new Set();
   const unresolvedPlugins = [];
   const parallels = [];
   const errors = [];
   let promiseDepth = 0;
   async function executePlugin(plugin2) {
     var _a2;
-    const unresolvedPluginsForThisPlugin = ((_a2 = plugin2.dependsOn) == null ? void 0 : _a2.filter((name) => plugins2.some((p) => p._name === name) && !resolvedPlugins.includes(name))) ?? [];
+    const unresolvedPluginsForThisPlugin = ((_a2 = plugin2.dependsOn) == null ? void 0 : _a2.filter((name) => plugins2.some((p) => p._name === name) && !resolvedPlugins.has(name))) ?? [];
     if (unresolvedPluginsForThisPlugin.length > 0) {
       unresolvedPlugins.push([new Set(unresolvedPluginsForThisPlugin), plugin2]);
     } else {
       const promise = applyPlugin(nuxtApp, plugin2).then(async () => {
         if (plugin2._name) {
-          resolvedPlugins.push(plugin2._name);
+          resolvedPlugins.add(plugin2._name);
           await Promise.all(unresolvedPlugins.map(async ([dependsOn, unexecutedPlugin]) => {
             if (dependsOn.has(plugin2._name)) {
               dependsOn.delete(plugin2._name);
@@ -217,7 +221,7 @@ function tryUseNuxtApp(id) {
   if (hasInjectionContext()) {
     nuxtAppInstance = (_a = getCurrentInstance()) == null ? void 0 : _a.appContext.app.$nuxt;
   }
-  nuxtAppInstance = nuxtAppInstance || getNuxtAppCtx(id).tryUse();
+  nuxtAppInstance || (nuxtAppInstance = getNuxtAppCtx(id).tryUse());
   return nuxtAppInstance || null;
 }
 function useNuxtApp(id) {
@@ -264,9 +268,7 @@ const isProcessingMiddleware = () => {
 };
 const URL_QUOTE_RE = /"/g;
 const navigateTo = (to, options) => {
-  if (!to) {
-    to = "/";
-  }
+  to || (to = "/");
   const toPath = typeof to === "string" ? to : "path" in to ? resolveRouteObject(to) : useRouter().resolve(to).href;
   const isExternalHost = hasProtocol(toPath, { acceptRelative: true });
   const isExternal = (options == null ? void 0 : options.external) || isExternalHost;
@@ -346,7 +348,7 @@ const showError = (error) => {
     const nuxtApp = useNuxtApp();
     const error2 = useError();
     if (false) ;
-    error2.value = error2.value || nuxtError;
+    error2.value || (error2.value = nuxtError);
   } catch {
     throw nuxtError;
   }
@@ -362,201 +364,14 @@ const createError = (error) => {
   });
   return nuxtError;
 };
-version[0] === "3";
-function resolveUnref(r) {
-  return typeof r === "function" ? r() : unref(r);
-}
-function resolveUnrefHeadInput(ref2) {
-  if (ref2 instanceof Promise || ref2 instanceof Date || ref2 instanceof RegExp)
-    return ref2;
-  const root = resolveUnref(ref2);
-  if (!ref2 || !root)
-    return root;
-  if (Array.isArray(root))
-    return root.map((r) => resolveUnrefHeadInput(r));
-  if (typeof root === "object") {
-    const resolved = {};
-    for (const k in root) {
-      if (!Object.prototype.hasOwnProperty.call(root, k)) {
-        continue;
-      }
-      if (k === "titleTemplate" || k[0] === "o" && k[1] === "n") {
-        resolved[k] = unref(root[k]);
-        continue;
-      }
-      resolved[k] = resolveUnrefHeadInput(root[k]);
-    }
-    return resolved;
-  }
-  return root;
-}
-defineHeadPlugin({
-  hooks: {
-    "entries:resolve": (ctx) => {
-      for (const entry2 of ctx.entries)
-        entry2.resolvedInput = resolveUnrefHeadInput(entry2.input);
-    }
-  }
-});
-const headSymbol = "usehead";
-const _global = typeof globalThis !== "undefined" ? globalThis : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-const globalKey$1 = "__unhead_injection_handler__";
-function setHeadInjectionHandler(handler) {
-  _global[globalKey$1] = handler;
-}
-function injectHead() {
-  if (globalKey$1 in _global) {
-    return _global[globalKey$1]();
-  }
-  const head = inject(headSymbol);
-  return head || getActiveHead();
-}
-[CapoPlugin({ track: true })];
-const unhead_KgADcZ0jPj = /* @__PURE__ */ defineNuxtPlugin({
+const unhead_k2P3m_ZDyjlr2mMYnoDPwavjsDN8hBlk9cFai0bbopU = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:head",
   enforce: "pre",
   setup(nuxtApp) {
     const head = nuxtApp.ssrContext.head;
-    setHeadInjectionHandler(
-      // need a fresh instance of the nuxt app to avoid parallel requests interfering with each other
-      () => useNuxtApp().vueApp._context.provides.usehead
-    );
     nuxtApp.vueApp.use(head);
   }
 });
-function createContext(opts = {}) {
-  let currentInstance;
-  let isSingleton = false;
-  const checkConflict = (instance) => {
-    if (currentInstance && currentInstance !== instance) {
-      throw new Error("Context conflict");
-    }
-  };
-  let als;
-  if (opts.asyncContext) {
-    const _AsyncLocalStorage = opts.AsyncLocalStorage || globalThis.AsyncLocalStorage;
-    if (_AsyncLocalStorage) {
-      als = new _AsyncLocalStorage();
-    } else {
-      console.warn("[unctx] `AsyncLocalStorage` is not provided.");
-    }
-  }
-  const _getCurrentInstance = () => {
-    if (als) {
-      const instance = als.getStore();
-      if (instance !== void 0) {
-        return instance;
-      }
-    }
-    return currentInstance;
-  };
-  return {
-    use: () => {
-      const _instance = _getCurrentInstance();
-      if (_instance === void 0) {
-        throw new Error("Context is not available");
-      }
-      return _instance;
-    },
-    tryUse: () => {
-      return _getCurrentInstance();
-    },
-    set: (instance, replace) => {
-      if (!replace) {
-        checkConflict(instance);
-      }
-      currentInstance = instance;
-      isSingleton = true;
-    },
-    unset: () => {
-      currentInstance = void 0;
-      isSingleton = false;
-    },
-    call: (instance, callback) => {
-      checkConflict(instance);
-      currentInstance = instance;
-      try {
-        return als ? als.run(instance, callback) : callback();
-      } finally {
-        if (!isSingleton) {
-          currentInstance = void 0;
-        }
-      }
-    },
-    async callAsync(instance, callback) {
-      currentInstance = instance;
-      const onRestore = () => {
-        currentInstance = instance;
-      };
-      const onLeave = () => currentInstance === instance ? onRestore : void 0;
-      asyncHandlers.add(onLeave);
-      try {
-        const r = als ? als.run(instance, callback) : callback();
-        if (!isSingleton) {
-          currentInstance = void 0;
-        }
-        return await r;
-      } finally {
-        asyncHandlers.delete(onLeave);
-      }
-    }
-  };
-}
-function createNamespace(defaultOpts = {}) {
-  const contexts = {};
-  return {
-    get(key, opts = {}) {
-      if (!contexts[key]) {
-        contexts[key] = createContext({ ...defaultOpts, ...opts });
-      }
-      return contexts[key];
-    }
-  };
-}
-const _globalThis = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof global !== "undefined" ? global : {};
-const globalKey = "__unctx__";
-_globalThis[globalKey] || (_globalThis[globalKey] = createNamespace());
-const asyncHandlersKey = "__unctx_async_handlers__";
-const asyncHandlers = _globalThis[asyncHandlersKey] || (_globalThis[asyncHandlersKey] = /* @__PURE__ */ new Set());
-function executeAsync(function_) {
-  const restores = [];
-  for (const leaveHandler of asyncHandlers) {
-    const restore2 = leaveHandler();
-    if (restore2) {
-      restores.push(restore2);
-    }
-  }
-  const restore = () => {
-    for (const restore2 of restores) {
-      restore2();
-    }
-  };
-  let awaitable = function_();
-  if (awaitable && typeof awaitable === "object" && "catch" in awaitable) {
-    awaitable = awaitable.catch((error) => {
-      restore();
-      throw error;
-    });
-  }
-  return [awaitable, restore];
-}
-const ROUTE_KEY_PARENTHESES_RE$1 = /(:\w+)\([^)]+\)/g;
-const ROUTE_KEY_SYMBOLS_RE$1 = /(:\w+)[?+*]/g;
-const ROUTE_KEY_NORMAL_RE$1 = /:\w+/g;
-const interpolatePath = (route, match) => {
-  return match.path.replace(ROUTE_KEY_PARENTHESES_RE$1, "$1").replace(ROUTE_KEY_SYMBOLS_RE$1, "$1").replace(ROUTE_KEY_NORMAL_RE$1, (r) => {
-    var _a;
-    return ((_a = route.params[r.slice(1)]) == null ? void 0 : _a.toString()) || "";
-  });
-};
-const generateRouteKey$1 = (routeProps, override) => {
-  const matchedRoute = routeProps.route.matched.find((m) => {
-    var _a;
-    return ((_a = m.components) == null ? void 0 : _a.default) === routeProps.Component.type;
-  });
-  const source = override ?? (matchedRoute == null ? void 0 : matchedRoute.meta.key) ?? (matchedRoute && interpolatePath(routeProps.route, matchedRoute));
-  return typeof source === "function" ? source(routeProps.route) : source;
-};
 function toArray(value) {
   return Array.isArray(value) ? value : [value];
 }
@@ -570,28 +385,26 @@ async function getRouteRules(arg) {
     return defu({}, ..._routeRulesMatcher.matchAll(path).reverse());
   }
 }
-function handleHotUpdate(_router, _generateRoutes) {
-}
 const _routes = [
   {
     name: "about",
     path: "/about",
-    component: () => import('./about-Dr1jIOxV.mjs')
+    component: () => import('./about-Bu10xGym.mjs')
   },
   {
     name: "index",
     path: "/",
-    component: () => import('./index-B9xXuwIU.mjs')
-  },
-  {
-    name: "introduce",
-    path: "/introduce",
-    component: () => import('./introduce-CYncTNVa.mjs')
+    component: () => import('./index-kXFnL2wx.mjs')
   },
   {
     name: "project",
     path: "/project",
-    component: () => import('./project-Dgobw1X7.mjs')
+    component: () => import('./project-DPkaIQ_k.mjs')
+  },
+  {
+    name: "introduce",
+    path: "/introduce",
+    component: () => import('./introduce-BC0hpil5.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -633,11 +446,6 @@ const routerOptions0 = {
     var _a;
     const nuxtApp = useNuxtApp();
     const behavior = ((_a = useRouter().options) == null ? void 0 : _a.scrollBehaviorType) ?? "auto";
-    let position = savedPosition || void 0;
-    const routeAllowsScrollToTop = typeof to.meta.scrollToTop === "function" ? to.meta.scrollToTop(to, from) : to.meta.scrollToTop;
-    if (!position && from && to && routeAllowsScrollToTop !== false && isChangingPage(to, from)) {
-      position = { left: 0, top: 0 };
-    }
     if (to.path === from.path) {
       if (from.hash && !to.hash) {
         return { left: 0, top: 0 };
@@ -647,15 +455,18 @@ const routerOptions0 = {
       }
       return false;
     }
-    const hasTransition = (route) => !!(route.meta.pageTransition ?? appPageTransition);
-    const hookToWait = hasTransition(from) && hasTransition(to) ? "page:transition:finish" : "page:finish";
+    const routeAllowsScrollToTop = typeof to.meta.scrollToTop === "function" ? to.meta.scrollToTop(to, from) : to.meta.scrollToTop;
+    if (routeAllowsScrollToTop === false) {
+      return false;
+    }
+    const hookToWait = nuxtApp._runningTransition ? "page:transition:finish" : "page:loading:end";
     return new Promise((resolve) => {
-      nuxtApp.hooks.hookOnce(hookToWait, async () => {
-        await new Promise((resolve2) => setTimeout(resolve2, 0));
-        if (to.hash) {
-          position = { el: to.hash, top: _getHashElementScrollMarginTop(to.hash), behavior };
-        }
-        resolve(position);
+      if (from === START_LOCATION) {
+        resolve(_calculatePosition(to, from, savedPosition, behavior));
+        return;
+      }
+      nuxtApp.hooks.hookOnce(hookToWait, () => {
+        requestAnimationFrame(() => resolve(_calculatePosition(to, from, savedPosition, behavior)));
       });
     });
   }
@@ -670,6 +481,24 @@ function _getHashElementScrollMarginTop(selector) {
   }
   return 0;
 }
+function _calculatePosition(to, from, savedPosition, defaultBehavior) {
+  if (savedPosition) {
+    return savedPosition;
+  }
+  const isPageNavigation = isChangingPage(to, from);
+  if (to.hash) {
+    return {
+      el: to.hash,
+      top: _getHashElementScrollMarginTop(to.hash),
+      behavior: isPageNavigation ? defaultBehavior : "instant"
+    };
+  }
+  return {
+    left: 0,
+    top: 0,
+    behavior: isPageNavigation ? defaultBehavior : "instant"
+  };
+}
 const configRouterOptions = {
   hashMode: false,
   scrollBehaviorType: "auto"
@@ -678,35 +507,25 @@ const routerOptions = {
   ...configRouterOptions,
   ...routerOptions0
 };
-const validate = /* @__PURE__ */ defineNuxtRouteMiddleware(async (to) => {
+const validate = /* @__PURE__ */ defineNuxtRouteMiddleware(async (to, from) => {
   var _a;
   let __temp, __restore;
   if (!((_a = to.meta) == null ? void 0 : _a.validate)) {
     return;
   }
-  const nuxtApp = useNuxtApp();
-  const router = useRouter();
   const result = ([__temp, __restore] = executeAsync(() => Promise.resolve(to.meta.validate(to))), __temp = await __temp, __restore(), __temp);
   if (result === true) {
     return;
   }
   const error = createError({
+    fatal: false,
     statusCode: result && result.statusCode || 404,
     statusMessage: result && result.statusMessage || `Page Not Found: ${to.fullPath}`,
     data: {
       path: to.fullPath
     }
   });
-  const unsub = router.beforeResolve((final) => {
-    unsub();
-    if (final === to) {
-      const unsub2 = router.afterEach(async () => {
-        unsub2();
-        await nuxtApp.runWithContext(() => showError(error));
-      });
-      return false;
-    }
-  });
+  return error;
 });
 const manifest_45route_45rule = /* @__PURE__ */ defineNuxtRouteMiddleware(async (to) => {
   {
@@ -749,7 +568,6 @@ const plugin = /* @__PURE__ */ defineNuxtPlugin({
       history,
       routes
     });
-    handleHotUpdate(router, routerOptions.routes ? routerOptions.routes : (routes2) => routes2);
     nuxtApp.vueApp.use(router);
     const previousRoute = shallowRef(router.currentRoute.value);
     router.afterEach((_to, from) => {
@@ -778,10 +596,10 @@ const plugin = /* @__PURE__ */ defineNuxtPlugin({
       });
     }
     nuxtApp._route = shallowReactive(route);
-    nuxtApp._middleware = nuxtApp._middleware || {
+    nuxtApp._middleware || (nuxtApp._middleware = {
       global: [],
       named: {}
-    };
+    });
     useError();
     if (!((_b = nuxtApp.ssrContext) == null ? void 0 : _b.islandContext)) {
       router.afterEach(async (to, _from, failure) => {
@@ -851,22 +669,36 @@ const plugin = /* @__PURE__ */ defineNuxtPlugin({
           if (!middleware) {
             throw new Error(`Unknown route middleware: '${entry2}'.`);
           }
-          const result = await nuxtApp.runWithContext(() => middleware(to, from));
-          {
-            if (result === false || result instanceof Error) {
-              const error2 = result || createError$1({
-                statusCode: 404,
-                statusMessage: `Page Not Found: ${initialURL}`
-              });
-              await nuxtApp.runWithContext(() => showError(error2));
-              return false;
+          try {
+            const result = await nuxtApp.runWithContext(() => middleware(to, from));
+            if (true) {
+              if (result === false || result instanceof Error) {
+                const error2 = result || createError({
+                  statusCode: 404,
+                  statusMessage: `Page Not Found: ${initialURL}`
+                });
+                await nuxtApp.runWithContext(() => showError(error2));
+                return false;
+              }
             }
-          }
-          if (result === true) {
-            continue;
-          }
-          if (result || result === false) {
-            return result;
+            if (result === true) {
+              continue;
+            }
+            if (result === false) {
+              return result;
+            }
+            if (result) {
+              if (isNuxtError(result) && result.fatal) {
+                await nuxtApp.runWithContext(() => showError(result));
+              }
+              return result;
+            }
+          } catch (err) {
+            const error2 = createError(err);
+            if (error2.fatal) {
+              await nuxtApp.runWithContext(() => showError(error2));
+            }
+            return error2;
           }
         }
       }
@@ -877,7 +709,7 @@ const plugin = /* @__PURE__ */ defineNuxtPlugin({
     });
     router.afterEach(async (to, _from) => {
       if (to.matched.length === 0) {
-        await nuxtApp.runWithContext(() => showError(createError$1({
+        await nuxtApp.runWithContext(() => showError(createError({
           statusCode: 404,
           fatal: false,
           statusMessage: `Page not found: ${to.fullPath}`,
@@ -918,7 +750,10 @@ const reducers = [
   ["Ref", (data) => isRef(data) && data.value],
   ["Reactive", (data) => isReactive(data) && toRaw(data)]
 ];
-const revive_payload_server_eJ33V7gbc6 = /* @__PURE__ */ defineNuxtPlugin({
+{
+  reducers.push(["Island", (data) => data && (data == null ? void 0 : data.__nuxt_island)]);
+}
+const revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:revive-payload:server",
   setup() {
     for (const [reducer, fn] of reducers) {
@@ -926,11 +761,11 @@ const revive_payload_server_eJ33V7gbc6 = /* @__PURE__ */ defineNuxtPlugin({
     }
   }
 });
-const LazyIcon = defineAsyncComponent(() => import('./index-B6x6sN1-.mjs').then((r) => r["default"] || r.default || r));
+const LazyIcon = defineAsyncComponent(() => import('./index-DKnuNrXC.mjs').then((r) => r["default"] || r.default || r));
 const lazyGlobalComponents = [
   ["Icon", LazyIcon]
 ];
-const components_plugin_KR1HBZs4kY = /* @__PURE__ */ defineNuxtPlugin({
+const components_plugin_z4hgvsiddfKkfXTP6M8M4zG5Cb7sGnDhcryKVM45Di4 = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:global-components",
   setup(nuxtApp) {
     for (const [name, component] of lazyGlobalComponents) {
@@ -1139,12 +974,10 @@ const inlineConfig = {
 const __appConfig = /* @__PURE__ */ defuFn(inlineConfig);
 function useAppConfig() {
   const nuxtApp = useNuxtApp();
-  if (!nuxtApp._appConfig) {
-    nuxtApp._appConfig = klona(__appConfig);
-  }
+  nuxtApp._appConfig || (nuxtApp._appConfig = klona(__appConfig));
   return nuxtApp._appConfig;
 }
-const plugin_WLsn00x1qh = /* @__PURE__ */ defineNuxtPlugin({
+const plugin_MeUvTuoKUi51yb_kBguab6hdcExVXeTtZtTg9TZZBB8 = /* @__PURE__ */ defineNuxtPlugin({
   name: "@nuxt/icon",
   setup() {
     var _a, _b;
@@ -1205,19 +1038,19 @@ const vAutoAnimate$1 = {
   getSSRProps: () => ({})
 };
 const vAutoAnimate = vAutoAnimate$1;
-const plugin_tMGwffvjBc = /* @__PURE__ */ defineNuxtPlugin((app) => {
+const plugin_h_pA3yusmDTJ8f7Mvx2nEWTVV4itdwLzF7i0rRgd_FI = /* @__PURE__ */ defineNuxtPlugin((app) => {
   app.vueApp.directive("auto-animate", vAutoAnimate);
 });
 const plugins = [
-  unhead_KgADcZ0jPj,
+  unhead_k2P3m_ZDyjlr2mMYnoDPwavjsDN8hBlk9cFai0bbopU,
   plugin,
-  revive_payload_server_eJ33V7gbc6,
-  components_plugin_KR1HBZs4kY,
-  plugin_WLsn00x1qh,
-  plugin_tMGwffvjBc
+  revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms,
+  components_plugin_z4hgvsiddfKkfXTP6M8M4zG5Cb7sGnDhcryKVM45Di4,
+  plugin_MeUvTuoKUi51yb_kBguab6hdcExVXeTtZtTg9TZZBB8,
+  plugin_h_pA3yusmDTJ8f7Mvx2nEWTVV4itdwLzF7i0rRgd_FI
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-jUL5OL5-.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-CZQrgmi2.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1230,25 +1063,27 @@ const LayoutLoader = defineComponent({
     return () => h(layouts[props.name], props.layoutProps, context.slots);
   }
 });
+const nuxtLayoutProps = {
+  name: {
+    type: [String, Boolean, Object],
+    default: null
+  },
+  fallback: {
+    type: [String, Object],
+    default: null
+  }
+};
 const __nuxt_component_0 = defineComponent({
   name: "NuxtLayout",
   inheritAttrs: false,
-  props: {
-    name: {
-      type: [String, Boolean, Object],
-      default: null
-    },
-    fallback: {
-      type: [String, Object],
-      default: null
-    }
-  },
+  props: nuxtLayoutProps,
   setup(props, context) {
     const nuxtApp = useNuxtApp();
     const injectedRoute = inject(PageRouteSymbol);
-    const route = injectedRoute === useRoute() ? useRoute$1() : injectedRoute;
+    const shouldUseEagerRoute = !injectedRoute || injectedRoute === useRoute();
+    const route = shouldUseEagerRoute ? useRoute$1() : injectedRoute;
     const layout = computed(() => {
-      let layout2 = unref(props.name) ?? route.meta.layout ?? "default";
+      let layout2 = unref(props.name) ?? (route == null ? void 0 : route.meta.layout) ?? "default";
       if (layout2 && !(layout2 in layouts)) {
         if (props.fallback) {
           layout2 = unref(props.fallback);
@@ -1256,12 +1091,15 @@ const __nuxt_component_0 = defineComponent({
       }
       return layout2;
     });
-    const layoutRef = ref();
+    const layoutRef = shallowRef();
     context.expose({ layoutRef });
     const done = nuxtApp.deferHydration();
+    let lastLayout;
     return () => {
       const hasLayout = layout.value && layout.value in layouts;
-      const transitionProps = route.meta.layoutTransition ?? appLayoutTransition;
+      const transitionProps = (route == null ? void 0 : route.meta.layoutTransition) ?? appLayoutTransition;
+      const previouslyRenderedLayout = lastLayout;
+      lastLayout = layout.value;
       return _wrapInTransition(hasLayout && transitionProps, {
         default: () => h(Suspense, { suspensible: true, onResolve: () => {
           nextTick(done);
@@ -1273,6 +1111,9 @@ const __nuxt_component_0 = defineComponent({
               key: layout.value || void 0,
               name: layout.value,
               shouldProvide: !props.name,
+              isRenderingNewLayout: (name) => {
+                return name !== previouslyRenderedLayout && name === layout.value;
+              },
               hasTransition: !!transitionProps
             },
             context.slots
@@ -1297,6 +1138,10 @@ const LayoutProvider = defineComponent({
     },
     shouldProvide: {
       type: Boolean
+    },
+    isRenderingNewLayout: {
+      type: Function,
+      required: true
     }
   },
   setup(props, context) {
@@ -1305,6 +1150,22 @@ const LayoutProvider = defineComponent({
       provide(LayoutMetaSymbol, {
         isCurrent: (route) => name === (route.meta.layout ?? "default")
       });
+    }
+    const injectedRoute = inject(PageRouteSymbol);
+    const isNotWithinNuxtPage = injectedRoute && injectedRoute === useRoute();
+    if (isNotWithinNuxtPage) {
+      const vueRouterRoute = useRoute$1();
+      const reactiveChildRoute = {};
+      for (const _key in vueRouterRoute) {
+        const key = _key;
+        Object.defineProperty(reactiveChildRoute, key, {
+          enumerable: true,
+          get: () => {
+            return props.isRenderingNewLayout(props.name) ? vueRouterRoute[key] : injectedRoute[key];
+          }
+        });
+      }
+      provide(PageRouteSymbol, shallowReactive(reactiveChildRoute));
     }
     return () => {
       var _a, _b;
@@ -1319,16 +1180,14 @@ const LayoutProvider = defineComponent({
     };
   }
 });
-const RouteProvider = defineComponent({
+const defineRouteProvider = (name = "RouteProvider") => defineComponent({
+  name,
   props: {
-    vnode: {
-      type: Object,
-      required: true
-    },
     route: {
       type: Object,
       required: true
     },
+    vnode: Object,
     vnodeRef: Object,
     renderKey: String,
     trackRootNodes: Boolean
@@ -1345,10 +1204,14 @@ const RouteProvider = defineComponent({
     }
     provide(PageRouteSymbol, shallowReactive(route));
     return () => {
+      if (!props.vnode) {
+        return props.vnode;
+      }
       return h(props.vnode, { ref: props.vnodeRef });
     };
   }
 });
+const RouteProvider = defineRouteProvider();
 const __nuxt_component_1 = defineComponent({
   name: "NuxtPage",
   inheritAttrs: false,
@@ -1375,62 +1238,30 @@ const __nuxt_component_1 = defineComponent({
   setup(props, { attrs, slots, expose }) {
     const nuxtApp = useNuxtApp();
     const pageRef = ref();
-    const forkRoute = inject(PageRouteSymbol, null);
-    let previousPageKey;
+    inject(PageRouteSymbol, null);
     expose({ pageRef });
     inject(LayoutMetaSymbol, null);
-    let vnode;
-    const done = nuxtApp.deferHydration();
-    if (props.pageKey) {
-      watch(() => props.pageKey, (next, prev) => {
-        if (next !== prev) {
-          nuxtApp.callHook("page:loading:start");
-        }
-      });
-    }
+    nuxtApp.deferHydration();
     return () => {
       return h(RouterView, { name: props.name, route: props.route, ...attrs }, {
         default: (routeProps) => {
-          if (!routeProps.Component) {
-            done();
-            return;
-          }
-          const key = generateRouteKey$1(routeProps, props.pageKey);
-          if (!nuxtApp.isHydrating && !hasChildrenRoutes(forkRoute, routeProps.route, routeProps.Component) && previousPageKey === key) {
-            nuxtApp.callHook("page:loading:end");
-          }
-          previousPageKey = key;
-          {
-            vnode = h(Suspense, {
-              suspensible: true
-            }, {
-              default: () => {
-                const providerVNode = h(RouteProvider, {
-                  key: key || void 0,
-                  vnode: slots.default ? h(Fragment, void 0, slots.default(routeProps)) : routeProps.Component,
-                  route: routeProps.route,
-                  renderKey: key || void 0,
-                  vnodeRef: pageRef
-                });
-                return providerVNode;
-              }
-            });
-            return vnode;
-          }
+          return h(Suspense, { suspensible: true }, {
+            default() {
+              return h(RouteProvider, {
+                vnode: slots.default ? normalizeSlot(slots.default, routeProps) : routeProps.Component,
+                route: routeProps.route,
+                vnodeRef: pageRef
+              });
+            }
+          });
         }
       });
     };
   }
 });
-function hasChildrenRoutes(fork, newRoute, Component) {
-  if (!fork) {
-    return false;
-  }
-  const index = newRoute.matched.findIndex((m) => {
-    var _a;
-    return ((_a = m.components) == null ? void 0 : _a.default) === (Component == null ? void 0 : Component.type);
-  });
-  return index < newRoute.matched.length - 1;
+function normalizeSlot(slot, data) {
+  const slotContent = slot(data);
+  return slotContent.length === 1 ? h(slotContent[0]) : h(Fragment, void 0, slotContent);
 }
 const _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
@@ -1486,8 +1317,8 @@ const _sfc_main$1 = {
     const statusMessage = _error.statusMessage ?? (is404 ? "Page Not Found" : "Internal Server Error");
     const description = _error.message || _error.toString();
     const stack = void 0;
-    const _Error404 = defineAsyncComponent(() => import('./error-404-BfQuNpqP.mjs'));
-    const _Error = defineAsyncComponent(() => import('./error-500-D_iwrveL.mjs'));
+    const _Error404 = defineAsyncComponent(() => import('./error-404-DjwMQOXY.mjs'));
+    const _Error = defineAsyncComponent(() => import('./error-500-BpvIAz1e.mjs'));
     const ErrorTemplate = is404 ? _Error404 : _Error;
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(ErrorTemplate), mergeProps({ statusCode: unref(statusCode), statusMessage: unref(statusMessage), description: unref(description), stack: unref(stack) }, _attrs), null, _parent));
@@ -1504,7 +1335,7 @@ const _sfc_main = {
   __name: "nuxt-root",
   __ssrInlineRender: true,
   setup(__props) {
-    const IslandRenderer = () => null;
+    const IslandRenderer = defineAsyncComponent(() => import('./island-renderer-CctsLlNo.mjs').then((r) => r.default || r));
     const nuxtApp = useNuxtApp();
     nuxtApp.deferHydration();
     nuxtApp.ssrContext.url;
@@ -1551,6 +1382,7 @@ _sfc_main.setup = (props, ctx) => {
 let entry;
 {
   entry = async function createNuxtAppServer(ssrContext) {
+    var _a;
     const vueApp = createApp(_sfc_main);
     const nuxt = createNuxtApp({ vueApp, ssrContext });
     try {
@@ -1558,7 +1390,7 @@ let entry;
       await nuxt.hooks.callHook("app:created", vueApp);
     } catch (error) {
       await nuxt.hooks.callHook("app:error", error);
-      nuxt.payload.error = nuxt.payload.error || createError(error);
+      (_a = nuxt.payload).error || (_a.error = createError(error));
     }
     if (ssrContext == null ? void 0 : ssrContext._renderResponse) {
       throw new Error("skipping render");
@@ -1568,5 +1400,5 @@ let entry;
 }
 const entry$1 = (ssrContext) => entry(ssrContext);
 
-export { _export_sfc as _, useNuxtApp as a, useRuntimeConfig as b, nuxtLinkDefaults as c, useAppConfig as d, entry$1 as default, asyncDataDefaults as e, createError as f, resolveUnrefHeadInput as g, injectHead as i, navigateTo as n, resolveRouteObject as r, useRouter as u };
+export { _export_sfc as _, useNuxtApp as a, useRuntimeConfig as b, createError as c, nuxtLinkDefaults as d, entry$1 as default, useAppConfig as e, asyncDataDefaults as f, navigateTo as n, resolveRouteObject as r, tryUseNuxtApp as t, useRouter as u };
 //# sourceMappingURL=server.mjs.map
