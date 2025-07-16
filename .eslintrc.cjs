@@ -1,16 +1,18 @@
 module.exports = {
+    root: true,
     env: {
         browser: true,
-        es2023: true
+        node: true,
+        es2021: true
     },
-    extends: ['@nuxtjs', 'prettier'],
+    extends: ['@nuxt/eslint-config', 'plugin:@typescript-eslint/recommended', 'plugin:vue/vue3-recommended'],
     parserOptions: {
-        ecmaVersion: 2023,
+        parser: '@typescript-eslint/parser',
+        ecmaVersion: 2021,
         sourceType: 'module'
     },
-    plugins: ['prettier'],
+    plugins: ['@typescript-eslint'],
     rules: {
-        'no-undef': 'off',
-        'prettier/prettier': 'error'
+        // 若需要，可在此客製規則
     }
 }

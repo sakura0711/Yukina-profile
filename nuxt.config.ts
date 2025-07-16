@@ -14,5 +14,6 @@ export default defineNuxtConfig({
         port: 5173
     },
 
-    modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', '@formkit/auto-animate', '@nuxt/icon']
+    modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', '@formkit/auto-animate', '@nuxt/icon','vue3-pixi-nuxt'],
+
 })
