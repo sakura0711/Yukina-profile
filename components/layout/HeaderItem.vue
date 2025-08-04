@@ -26,102 +26,139 @@ onUnmounted(() => {
 <template>
     <nav
         :class="[
-            'fixed left-0 top-0 flex w-full items-center justify-around px-6 py-4 transition-all duration-300 max-2xl:justify-between md:px-10'
+                    
+            'fixed left-0 top-0 z-50 flex w-full items-center justify-around px-6 py-4 transition-all duration-300  max-2xl:justify-between md:px-10',
+            isScrolled ? ' backdrop-blur-md border-b' : 'bg-transparent'
         ]"
     >
         <!-- Logo -->
-        <nuxt-link to="/">
-            <p>
-                <b class="text-2xl font-bold">🌸</b>
-                <s
-                    class="bg-gradient-to-r from-red-300 via-pink-400 via-purple-400 to-blue-400 bg-clip-text text-2xl font-bold text-transparent"
-                >
-                    落櫻ゆきな</s
-                >
-            </p></nuxt-link
-        >
+        <nuxt-link to="/" class="group">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🌸</span>
+                <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-xl font-bold text-transparent group-hover:from-pink-400 group-hover:via-purple-400 group-hover:to-pink-400 transition-all duration-300">
+                    落櫻ゆきな
+                </span>
+            </div>
+        </nuxt-link>
 
         <!-- 桌機版選單 -->
-        <div class="text-bold hidden gap-4 md:flex">
-            <div
-                class="relative px-2 py-1 text-lg font-bold text-cyan-600 transition-all duration-300"
-                style="border-right: 4px double #ced2d9"
+        <div class="hidden md:flex items-center gap-8">
+            <nuxt-link
+                to="/"
+                class="nav-link text-black-800 text-lg  hover:text-purple-400 transition-colors duration-300 relative font-extrabold"
             >
-                <nuxt-link
-                    v-for="(item, index) in [
-                        { to: '/introduce', text: '簡介' },
-                        { to: '/about', text: '技能樹' },
-                        { to: '/project', text: '奇怪的作品' }
-                    ]"
-                    :key="index"
-                    :to="item.to"
-                    class="px-3 hover:text-blue-500"
-                >
-                    {{ item.text }}
-                </nuxt-link>
-            </div>
-
-            <div class="flex items-center justify-between gap-4 text-zinc-600">
-                <a href="https://github.com/sakura0711" class="flex items-center justify-center gap-2" target="_blank">
-                    <Icon name="grommet-icons:github" size="1.5em" />
-                    <!-- <i>GitHub</i> -->
-                </a>
-                <a
-                    href="https://discordapp.com/users/565550082016149515"
-                    class="flex items-center justify-center gap-2"
-                    target="_blank"
-                >
-                    <Icon name="ic:twotone-discord" size="1.6em" />
-                    <!-- <i>Discord</i> -->
-                </a>
-                <a
-                    href="https://mail.google.com/mail/?view=cm&fs=1&to=testuseroozx@gmail.com&su=&body="
-                    target="_blank"
-                    class="flex items-center justify-center gap-2"
-                >
-                    <Icon name="bx:bxl-gmail" size="1.6em" />
-                    <!-- <i>Gmail</i> -->
-                </a>
-            </div>
+                首頁
+            </nuxt-link>
+            <nuxt-link
+                to="/introduce"
+                class="nav-link text-black-800 text-lg  hover:text-purple-400 transition-colors duration-300 relative font-extrabold"
+            >
+                簡介
+            </nuxt-link>
+            <nuxt-link
+                to="/about"
+                class="nav-link text-black-800 text-lg  hover:text-purple-400 transition-colors duration-300 relative font-extrabold"
+            >
+                關於
+            </nuxt-link>
+            <nuxt-link
+                to="/project"
+                class="nav-link text-black-800 text-lg  hover:text-purple-400 transition-colors duration-300 relative font-extrabold"
+            >
+                專案
+            </nuxt-link>
         </div>
 
-        <!-- 漢堡選單按鈕（手機版） -->
-        <button class="text-3xl md:hidden" @click="toggleMenu">☰</button>
+        <!-- 手機版選單按鈕 -->
+        <button
+            @click="toggleMenu"
+            class="md:hidden p-2 text-black-800 text-lg hover:text-purple-400 transition-colors duration-300"
+        >
+            <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    v-if="!isOpen"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                />
+                <path
+                    v-else
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                />
+            </svg>
+        </button>
 
         <!-- 手機版選單 -->
         <div
-            v-if="isOpen"
-            class="absolute left-0 top-16 flex w-full flex-col items-center gap-6 bg-white py-4 text-cyan-600 shadow-md transition-all duration-300 md:hidden"
+            :class="[
+                'absolute top-full left-0 w-full md:hidden transition-all duration-300',
+                isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+            ]"
         >
-            <nuxt-link
-                v-for="(item, index) in [
-                    { to: '/introduce', text: '簡介' },
-                    { to: '/about', text: '技能樹' },
-                    { to: '/project', text: '奇怪的作品' }
-                ]"
-                :key="index"
-                :to="item.to"
-                class="w-full py-2 text-center text-lg hover:text-blue-500"
-                @click="isOpen = false"
-            >
-                {{ item.text }}
-            </nuxt-link>
+            <div class="backdrop-blur-md border-b  px-6 py-4 space-y-4">
+                <nuxt-link
+                    to="/"
+                    @click="isOpen = false"
+                    class="block text-black-800 text-lg  hover:text-purple-400 transition-colors duration-300 font-medifont-extrabold"
+                >
+                    首頁
+                </nuxt-link>
+                <nuxt-link
+                    to="/introduce"
+                    @click="isOpen = false"
+                    class="block text-black-800 text-lg  hover:text-purple-400 transition-colors duration-300 font-medifont-extrabold"
+                >
+                    簡介
+                </nuxt-link>
+                <nuxt-link
+                    to="/about"
+                    @click="isOpen = false"
+                    class="block text-black-800 text-lg  hover:text-purple-400 transition-colors duration-300 font-medifont-extrabold"
+                >
+                    關於
+                </nuxt-link>
+                <nuxt-link
+                    to="/project"
+                    @click="isOpen = false"
+                    class="block text-black-800 text-lg  hover:text-purple-400 transition-colors duration-300 font-medifont-extrabold"
+                >
+                    專案
+                </nuxt-link>
+            </div>
         </div>
     </nav>
 </template>
 
 <style scoped>
-/* 進入動畫 */
-nav {
-    opacity: 0;
-    transform: translateY(-20px);
-    animation: fadeIn 0.5s forwards;
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, #8b5cf6, #ec4899);
+    transition: width 0.3s ease;
 }
 
-@keyframes fadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.router-link-active.nav-link {
+    color: rgb(101, 59, 134);
+}
+
+.router-link-active.nav-link::after {
+    width: 100%;
 }
 </style>
