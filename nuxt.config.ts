@@ -14,6 +14,20 @@ export default defineNuxtConfig({
         port: 5173
     },
 
-    modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', '@formkit/auto-animate', '@nuxt/icon','vue3-pixi-nuxt'],
+    modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', '@formkit/auto-animate', '@nuxt/icon'],
 
+    css: [
+        '~/assets/css/animations.css'
+    ],
+
+    app: {
+        pageTransition: { 
+            name: 'page', 
+            mode: 'out-in' 
+        },
+        layoutTransition: { 
+            name: 'layout', 
+            mode: 'out-in' 
+        }
+    }
 })
