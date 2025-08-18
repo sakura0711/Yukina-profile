@@ -29,6 +29,14 @@ const windowPosition = ref({ x: 0, y: 0 })
 const isWindowMaximized = ref(false)
 const originalSize = ref({ width: '', height: '', x: 0, y: 0 })
 
+// 調整大小相關狀態
+const isResizing = ref(false)
+const resizeStart = ref({ x: 0, y: 0, width: 0, height: 0, windowX: 0, windowY: 0 })
+const resizeDirection = ref('')
+const windowSize = ref({ width: 1300, height: 800 })
+const minSize = { width: 400, height: 300 }
+
+
 const handleClose = () => {
   isClosing.value = true
   
@@ -139,6 +147,85 @@ const stopDrag = () => {
   }
 }
 
+// 調整大小功能
+const startResize = (event: MouseEvent, direction: string) => {
+  if (isWindowMaximized.value) return // 最大化時不允許調整大小
+  
+  event.preventDefault()
+  event.stopPropagation()
+  
+  isResizing.value = true
+  resizeDirection.value = direction
+  resizeStart.value = {
+    x: event.clientX,
+    y: event.clientY,
+    width: windowSize.value.width,
+    height: windowSize.value.height,
+    windowX: windowPosition.value.x,
+    windowY: windowPosition.value.y
+  }
+  
+  document.addEventListener('mousemove', onResize)
+  document.addEventListener('mouseup', stopResize)
+  
+  // 禁用過渡效果
+  if (windowRef.value) {
+    windowRef.value.style.transition = 'none'
+  }
+}
+
+const onResize = (event: MouseEvent) => {
+  if (!isResizing.value) return
+  
+  const deltaX = event.clientX - resizeStart.value.x
+  const deltaY = event.clientY - resizeStart.value.y
+  
+  let newWidth = resizeStart.value.width
+  let newHeight = resizeStart.value.height
+  let newX = resizeStart.value.windowX
+  let newY = resizeStart.value.windowY
+  
+  // 根據拖拽方向調整尺寸和位置
+  if (resizeDirection.value.includes('right')) {
+    // 右邊調整：右邊緣移動，左邊緣固定
+    newWidth = Math.max(minSize.width, resizeStart.value.width + deltaX)
+  }
+  
+  if (resizeDirection.value.includes('left')) {
+    newWidth = Math.max(minSize.width, resizeStart.value.width - deltaX)
+  }
+  
+  if (resizeDirection.value.includes('bottom')) {
+    // 下方調整：下邊緣移動，上邊緣固定
+    newHeight = Math.max(minSize.height, resizeStart.value.height + deltaY)
+  }
+  
+  // 更新視窗大小和位置
+  windowSize.value = {
+    width: newWidth,
+    height: newHeight
+  }
+  
+  windowPosition.value = {
+    x: newX,
+    y: newY
+  }
+}
+
+const stopResize = () => {
+  isResizing.value = false
+  
+  document.removeEventListener('mousemove', onResize)
+  document.removeEventListener('mouseup', stopResize)
+  
+  // 恢復過渡效果
+  setTimeout(() => {
+    if (windowRef.value) {
+      windowRef.value.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+    }
+  }, 100)
+}
+
 // 雙擊標題列最大化/還原
 const handleDoubleClick = () => {
   handleMaximize()
@@ -153,19 +240,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="fixed inset-0 z-40 flex items-center justify-center fade-in mb-10">
+  <div class="fixed inset-0 z-40 flex items-center justify-center fade-in mb-10 pointer-events-none">
     <!-- 視窗容器 -->
     <div 
       ref="windowRef"
       :class="[
-        'bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden',
-        isWindowMaximized ? 'fixed top-0 left-0 right-0 rounded-none' : 'w-full max-w-5xl h-5/6 mx-4',
-        isDragging ? 'cursor-grabbing' : ''
+        'bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden pointer-events-auto relative',
+        isWindowMaximized ? 'fixed top-0 left-0 right-0 rounded-none' : 'mx-4',
+        isDragging ? 'cursor-grabbing' : '',
+        isResizing ? 'cursor-nw-resize' : ''
       ]"
       :style="{
-        transition: isDragging ? 'none' : 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        transition: (isDragging || isResizing) ? 'none' : 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
         transform: !isWindowMaximized ? `translate(${windowPosition.x}px, ${windowPosition.y}px)` : 'none',
-        height: isWindowMaximized ? 'calc(100vh - 100px)' : '' // 100px 是 taskbar 的高度
+        width: !isWindowMaximized ? `${windowSize.width}px` : '100%',
+        height: isWindowMaximized ? 'calc(100vh - 100px)' : `${windowSize.height}px`
       }"
     >
       <!-- 視窗標題列 -->
@@ -219,6 +308,41 @@ onMounted(() => {
       <div class="window-content h-full overflow-auto bg-gray-50 pb-12">
         <slot />
       </div>
+      
+      <!-- 調整大小區域 -->
+      <template v-if="!isWindowMaximized">
+        <!-- 左邊調整區域 -->
+        <div 
+          @mousedown="(e) => startResize(e, 'left')"
+          class="resize-handle-edge absolute top-0 left-0 w-1 h-full cursor-ew-resize opacity-0 hover:opacity-100 hover:bg-blue-400 transition-all duration-200"
+          title="拖拽調整寬度"
+        ></div>
+        
+        <!-- 右邊調整區域 -->
+        <div 
+          @mousedown="(e) => startResize(e, 'right')"
+          class="resize-handle-edge absolute top-0 right-0 w-1 h-full cursor-ew-resize opacity-0 hover:opacity-100 hover:bg-blue-400 transition-all duration-200"
+          title="拖拽調整寬度"
+        ></div>
+        
+        <!-- 下方調整區域 -->
+        <div 
+          @mousedown="(e) => startResize(e, 'bottom')"
+          class="resize-handle-edge absolute bottom-0 left-0 w-full h-1 cursor-ns-resize opacity-0 hover:opacity-100 hover:bg-blue-400 transition-all duration-200"
+          title="拖拽調整高度"
+        ></div>
+        
+        <!-- 右下角調整區域 -->
+        <div 
+          @mousedown="(e) => startResize(e, 'bottom-right')"
+          class="resize-handle-corner absolute bottom-0 right-0 w-4 h-4 cursor-nw-resize opacity-0 hover:opacity-100 transition-opacity duration-200"
+          title="拖拽調整大小"
+        >
+          <svg class="w-4 h-4 text-gray-400" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M16 16V10h-2v4H10v2h6zM16 6V0h-6v2h4v4h2z"/>
+          </svg>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -235,6 +359,26 @@ onMounted(() => {
 
 .window-header:active {
   cursor: grabbing;
+}
+
+/* 調整大小控制區域 */
+.resize-handle-edge {
+  z-index: 10;
+}
+
+.resize-handle-edge:hover {
+  background-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.resize-handle-corner {
+  z-index: 20;
+  background: linear-gradient(-45deg, transparent 0%, transparent 30%, rgba(156, 163, 175, 0.3) 30%, rgba(156, 163, 175, 0.3) 50%, transparent 50%, transparent 80%, rgba(156, 163, 175, 0.3) 80%);
+  background-size: 8px 8px;
+}
+
+.resize-handle-corner:hover {
+  background: linear-gradient(-45deg, transparent 0%, transparent 30%, rgba(156, 163, 175, 0.6) 30%, rgba(156, 163, 175, 0.6) 50%, transparent 50%, transparent 80%, rgba(156, 163, 175, 0.6) 80%);
+  background-size: 8px 8px;
 }
 
 /* 滾動條美化 */
