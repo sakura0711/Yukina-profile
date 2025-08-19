@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 interface Props {
   title?: string
@@ -33,8 +33,72 @@ const originalSize = ref({ width: '', height: '', x: 0, y: 0 })
 const isResizing = ref(false)
 const resizeStart = ref({ x: 0, y: 0, width: 0, height: 0, windowX: 0, windowY: 0 })
 const resizeDirection = ref('')
-const windowSize = ref({ width: 1300, height: 800 })
+
+// 根據視窗大小計算初始大小
+const getInitialSize = () => {
+  if (typeof window !== 'undefined') {
+    const maxWidth = 1300
+    const maxHeight = 800
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    
+    // 留一些邊距，避免視窗太大
+    const availableWidth = viewportWidth - 100 // 左右各留50px
+    const availableHeight = viewportHeight - 200 // 上下留200px（包含taskbar）
+    
+    return {
+      width: Math.min(maxWidth, availableWidth),
+      height: Math.min(maxHeight, availableHeight)
+    }
+  }
+  // 服務端渲染時的預設值
+  return { width: 1000, height: 600 }
+}
+
+const windowSize = ref(getInitialSize())
 const minSize = { width: 400, height: 300 }
+
+// 響應式調整視窗大小
+let resizeTimeout: ReturnType<typeof setTimeout> | null = null
+
+const adjustWindowSizeToViewport = () => {
+  if (isWindowMaximized.value) return // 最大化時不調整
+  
+  // 防抖處理，避免頻繁調整
+  if (resizeTimeout) {
+    clearTimeout(resizeTimeout)
+  }
+  
+  resizeTimeout = setTimeout(() => {
+    const newSize = getInitialSize()
+    const currentWidth = windowSize.value.width
+    const currentHeight = windowSize.value.height
+    
+    // 只有當新的建議大小小於當前大小時才調整（避免視窗超出螢幕）
+    if (newSize.width < currentWidth || newSize.height < currentHeight) {
+      windowSize.value = {
+        width: Math.min(currentWidth, newSize.width),
+        height: Math.min(currentHeight, newSize.height)
+      }
+      
+      // 如果視窗位置超出邊界，也需要調整位置
+      adjustWindowPosition()
+    }
+  }, 150) // 150ms 防抖延遲
+}
+
+// 調整視窗位置，確保不超出螢幕邊界
+const adjustWindowPosition = () => {
+  if (typeof window === 'undefined') return
+  
+  const maxX = window.innerWidth - windowSize.value.width - 50
+  const maxY = window.innerHeight - windowSize.value.height - 150
+  
+  windowPosition.value = {
+    x: Math.max(-50, Math.min(maxX, windowPosition.value.x)),
+    y: Math.max(-50, Math.min(maxY, windowPosition.value.y))
+  }
+}
 
 
 const handleClose = () => {
@@ -236,11 +300,27 @@ onMounted(() => {
   if (windowRef.value) {
     windowRef.value.classList.add('window-bounce-in')
   }
+  
+  // 在客戶端重新計算初始大小
+  windowSize.value = getInitialSize()
+  
+  // 監聽瀏覽器視窗大小變化
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', adjustWindowSizeToViewport)
+  }
+})
+
+// 組件卸載時清理監聽器
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('resize', adjustWindowSizeToViewport)
+  }
 })
 </script>
 
 <template>
-  <div class="fixed inset-0 z-40 flex items-center justify-center fade-in mb-10 pointer-events-none">
+  <div class="fixed inset-0 z-40 flex justify-center fade-in mb-10 pointer-events-none"
+       :class="{ 'items-start': isWindowMaximized, 'items-center': !isWindowMaximized }">
     <!-- 視窗容器 -->
     <div 
       ref="windowRef"
