@@ -1,8 +1,11 @@
-<!-- eslint-disable prettier/prettier -->
-
-
 <template>
-  <div></div>
+    <div>
+        <HeroSection />
+        <AboutSection />
+        <ExperienceSection />
+        <ProjectsSection />
+        <TreeQRSection />
+        <SkillsSection />
+        <ContactSection />
+    </div>
 </template>
-
-

@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "xiangjun-portfolio",
   "private": true,
   "type": "module",
   "scripts": {
@@ -7,28 +7,18 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "lint": "eslint --ext .js,.vue ."
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "esbuild": "^0.25.0",
     "nuxt": "^3.6.0",
+    "qrcode-generator": "^2.0.4",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0",
-    "vue3-draggable-resizable": "^1.6.5"
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@formkit/auto-animate": "^0.8.2",
-    "@iconify-json/devicon": "^1.2.18",
-    "@iconify-json/skill-icons": "^1.2.0",
+    "@iconify-json/lucide": "^1.2.0",
     "@nuxt/icon": "^1.10.3",
-    "@nuxtjs/eslint-config": "^12.0.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
-    "@vueuse/nuxt": "^12.8.2",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^10.1.1",
-    "eslint-plugin-prettier": "^5.2.3",
-    "prettier": "^3.5.3",
-    "prettier-plugin-tailwindcss": "^0.6.11"
+    "@vueuse/nuxt": "^12.8.2"
   }
 }
