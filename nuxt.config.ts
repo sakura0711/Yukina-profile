@@ -14,29 +14,33 @@ export default defineNuxtConfig({
     app: {
         head: {
             htmlAttrs: { lang: 'zh-TW' },
-            title: '鄭翔駿 | 前端工程師 — Portfolio',
+            title: 'SIANG-JYUN | 前端工程師 — Portfolio',
             meta: [
                 { charset: 'utf-8' },
                 { name: 'viewport', content: 'width=device-width, initial-scale=1' },
                 {
                     name: 'description',
                     content:
-                        '前端工程師鄭翔駿的個人作品集，Vue 3 / Nuxt / TypeScript，工研院實習經歷，ISO 27001 主導稽核員。'
+                        '前端工程師SIANG-JYUN的個人作品集，Vue 3 / Nuxt / TypeScript，工研院實習經歷，ISO 27001 主導稽核員。'
                 },
-                { property: 'og:title', content: '鄭翔駿 | 前端工程師 — Portfolio' },
+                { property: 'og:title', content: 'SIANG-JYUN | 前端工程師 — Portfolio' },
                 {
                     property: 'og:description',
                     content:
-                        '前端工程師鄭翔駿的個人作品集，Vue 3 / Nuxt / TypeScript，工研院實習經歷，ISO 27001 主導稽核員。'
+                        '前端工程師SIANG-JYUN的個人作品集，Vue 3 / Nuxt / TypeScript，工研院實習經歷，ISO 27001 主導稽核員。'
                 },
                 { property: 'og:type', content: 'website' },
                 { property: 'og:locale', content: 'zh_TW' },
-                { name: 'author', content: '鄭翔駿' }
+                { name: 'author', content: 'SIANG-JYUN' }
             ],
             link: [
                 {
                     rel: 'stylesheet',
                     href: 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap'
+                },
+                {
+                    rel: 'stylesheet',
+                    href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined'
                 }
             ]
         }

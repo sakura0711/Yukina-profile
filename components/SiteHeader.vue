@@ -5,8 +5,9 @@ const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
 const navLinks = [
-    { label: '經歷', href: '#experience' },
-    { label: '作品', href: '#projects' },
+    { label: 'git log', href: '#experience' },
+    { label: 'ls projects/', href: '#projects' },
+    { label: 'plugins', href: '#skills' },
     { label: '聯繫', href: '#contact' }
 ]
 
@@ -14,9 +15,20 @@ const handleScroll = () => {
     isScrolled.value = window.scrollY > 50
 }
 
+const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
 const scrollTo = (href: string) => {
     isMobileOpen.value = false
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+    const target = document.querySelector<HTMLElement>(href)
+
+    if (target) {
+        window.scrollTo({
+            top: window.scrollY + target.getBoundingClientRect().top - 100,
+            behavior: 'smooth'
+        })
+    }
 }
 
 onMounted(() => window.addEventListener('scroll', handleScroll))
@@ -32,25 +44,29 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
                 : 'bg-transparent'
         ]"
     >
-        <nav class="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
+        <nav class="mx-auto flex max-w-[60vw] items-center justify-between py-5">
             <a
                 href="#"
-                class="text-sm text-ink-900 dark:text-ink-100"
-                @click.prevent="window.scrollTo({ top: 0, behavior: 'smooth' })"
+                class="flex items-center gap-1 text-base text-ink-900 dark:text-ink-100"
+                @click.prevent="scrollToTop"
             >
-                鄭翔駿
+            <span class="material-symbols-outlined">
+                terminal_2
+            </span>
+                cd ~
             </a>
 
-            <div class="hidden items-center gap-5 md:flex">
-                <a
-                    v-for="link in navLinks"
-                    :key="link.href"
-                    :href="link.href"
-                    class="text-sm text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-100"
-                    @click.prevent="scrollTo(link.href)"
-                >
-                    {{ link.label }}
-                </a>
+            <div class="hidden items-center gap-3 md:flex">
+                <template v-for="(link, i) in navLinks" :key="link.href">
+                    <span v-if="i > 0" class="select-none text-ink-200 dark:text-ink-700">|</span>
+                    <a
+                        :href="link.href"
+                        class="text-base text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-100"
+                        @click.prevent="scrollTo(link.href)"
+                    >
+                        {{ link.label }}
+                    </a>
+                </template>
 
                 <button
                     class="text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-100"
@@ -88,7 +104,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
                     v-for="link in navLinks"
                     :key="link.href"
                     :href="link.href"
-                    class="block py-2 text-sm text-ink-600 transition-colors hover:text-ink-900 dark:text-ink-400 dark:hover:text-ink-100"
+                    class="block py-2 text-base text-ink-600 transition-colors hover:text-ink-900 dark:text-ink-400 dark:hover:text-ink-100"
                     @click.prevent="scrollTo(link.href)"
                 >
                     {{ link.label }}

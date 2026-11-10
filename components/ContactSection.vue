@@ -30,10 +30,10 @@ const handleSubmit = async () => {
 
 <template>
     <section id="contact" class="pb-20">
-        <div class="mx-auto max-w-3xl px-6">
+        <div class="mx-auto max-w-[80vw]">
             <h2 class="mb-10 font-serif text-2xl text-ink-900 dark:text-ink-100">聯繫</h2>
 
-            <div class="space-y-2 text-sm">
+            <div class="space-y-2 text-base">
                 <a
                     href="mailto:vamosnet2025@gmail.com"
                     class="block text-ink-600 transition-colors hover:text-ink-900 dark:text-ink-400 dark:hover:text-ink-100"
@@ -52,7 +52,7 @@ const handleSubmit = async () => {
             </div>
 
             <div v-if="isSubmitted" class="mt-10">
-                <p class="text-sm text-ink-500">訊息已送出，感謝您的聯繫。</p>
+                <p class="text-base text-ink-500">訊息已送出，感謝您的聯繫。</p>
             </div>
 
             <form v-else class="mt-10 max-w-sm space-y-4" @submit.prevent="handleSubmit">
@@ -61,26 +61,26 @@ const handleSubmit = async () => {
                     type="text"
                     placeholder="姓名"
                     required
-                    class="block w-full border-0 border-b border-ink-200 bg-transparent pb-2 text-sm text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
+                    class="block w-full border-0 border-b border-ink-200 bg-transparent pb-2 text-base text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
                 />
                 <input
                     v-model="form.email"
                     type="email"
                     placeholder="Email"
                     required
-                    class="block w-full border-0 border-b border-ink-200 bg-transparent pb-2 text-sm text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
+                    class="block w-full border-0 border-b border-ink-200 bg-transparent pb-2 text-base text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
                 />
                 <textarea
                     v-model="form.message"
                     rows="3"
                     placeholder="訊息"
                     required
-                    class="block w-full resize-none border-0 border-b border-ink-200 bg-transparent pb-2 text-sm text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
+                    class="block w-full resize-none border-0 border-b border-ink-200 bg-transparent pb-2 text-base text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
                 ></textarea>
                 <button
                     type="submit"
                     :disabled="isSubmitting"
-                    class="text-sm text-ink-900 underline decoration-ink-300 underline-offset-4 transition-colors hover:decoration-ink-900 disabled:opacity-50 dark:text-ink-100 dark:decoration-ink-600 dark:hover:decoration-ink-100"
+                    class="text-base text-ink-900 underline decoration-ink-300 underline-offset-4 transition-colors hover:decoration-ink-900 disabled:opacity-50 dark:text-ink-100 dark:decoration-ink-600 dark:hover:decoration-ink-100"
                 >
                     {{ isSubmitting ? '送出中...' : '送出' }}
                 </button>

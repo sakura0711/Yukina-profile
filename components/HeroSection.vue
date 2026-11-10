@@ -1,10 +1,219 @@
+<script setup lang="ts">
+const sectionRef = ref<HTMLElement>()
+const canvasRef = ref<HTMLCanvasElement>()
+const scrollProgress = ref(0)
+const canvasSize = ref(200)
+const moduleCount = ref(0)
+const isDark = useDark()
+
+interface Cell {
+    tree: 'leaf' | 'trunk' | 'none'
+    dark: boolean
+    ox: number
+    oy: number
+    shade: number
+}
+
+const grid = ref<Cell[][]>([])
+
+function lerp(a: number, b: number, t: number) {
+    return a + (b - a) * t
+}
+
+function ease(t: number) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+}
+
+function treeType(r: number, c: number, n: number): 'leaf' | 'trunk' | 'none' {
+    const cx = (n - 1) / 2
+    const cy = n * 0.35
+    const rx = n * 0.4
+    const ry = n * 0.3
+    const dx = (c - cx) / rx
+    const dy = (r - cy) / ry
+    const d = Math.sqrt(dx * dx + dy * dy)
+    const noise = Math.sin(r * 5.3 + c * 3.7) * 0.1 + Math.cos(r * 2.1 - c * 4.5) * 0.07
+
+    if (d < 1 + noise && r < n * 0.68) return 'leaf'
+
+    const tw = n * 0.07
+    if (Math.abs(c - cx) <= tw && r >= n * 0.6 && r < n * 0.92) return 'trunk'
+    if (r >= n * 0.87 && r < n * 0.96) {
+        const bw = tw + (r - n * 0.87) * 1.5
+        if (Math.abs(c - cx) <= bw) return 'trunk'
+    }
+
+    return 'none'
+}
+
+function updateCanvasSize() {
+    const s = window.innerWidth < 768 ? 140 : 200
+    if (s !== canvasSize.value) {
+        canvasSize.value = s
+        draw()
+    }
+}
+
+onMounted(async () => {
+    updateCanvasSize()
+    window.addEventListener('resize', updateCanvasSize)
+
+    const QR = (await import('qrcode-generator')).default
+    const qr = QR(0, 'L')
+    qr.addData('https://github.com/sakura0711')
+    qr.make()
+
+    const n = qr.getModuleCount()
+    moduleCount.value = n
+    const g: Cell[][] = []
+
+    for (let r = 0; r < n; r++) {
+        const row: Cell[] = []
+        for (let c = 0; c < n; c++) {
+            const tt = treeType(r, c, n)
+            row.push({
+                tree: tt,
+                dark: qr.isDark(r, c),
+                ox: tt !== 'none' ? (Math.random() - 0.5) * 4 : 0,
+                oy: tt !== 'none' ? (Math.random() - 0.5) * 4 : 0,
+                shade: Math.random()
+            })
+        }
+        g.push(row)
+    }
+
+    grid.value = g
+    draw()
+    window.addEventListener('scroll', onScroll, { passive: true })
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', onScroll)
+    window.removeEventListener('resize', updateCanvasSize)
+})
+
+watch(isDark, () => draw())
+
+let raf = 0
+
+function onScroll() {
+    if (!sectionRef.value) return
+    const rect = sectionRef.value.getBoundingClientRect()
+    const travel = rect.height - window.innerHeight
+    scrollProgress.value = Math.max(0, Math.min(1, -rect.top / travel))
+    cancelAnimationFrame(raf)
+    raf = requestAnimationFrame(draw)
+}
+
+function draw() {
+    const canvas = canvasRef.value
+    if (!canvas || !grid.value.length) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const SIZE = canvasSize.value
+    const dpr = window.devicePixelRatio || 1
+    canvas.width = SIZE * dpr
+    canvas.height = SIZE * dpr
+    canvas.style.width = SIZE + 'px'
+    canvas.style.height = SIZE + 'px'
+    ctx.scale(dpr, dpr)
+
+    const t = ease(Math.max(0, Math.min(1, (scrollProgress.value - 0.15) / 0.6)))
+    const n = moduleCount.value
+    const cs = SIZE / n
+
+    ctx.clearRect(0, 0, SIZE, SIZE)
+
+    const dark = isDark.value
+    const bgR = dark ? 28 : 250, bgG = dark ? 25 : 249, bgB = dark ? 23 : 247
+    const qrR = dark ? 245 : 28, qrG = dark ? 245 : 25, qrB = dark ? 244 : 23
+
+    if (t > 0.05) {
+        ctx.fillStyle = `rgba(${bgR},${bgG},${bgB},${Math.min(1, t / 0.5)})`
+        ctx.beginPath()
+        ctx.roundRect(-4, -4, SIZE + 8, SIZE + 8, 12)
+        ctx.fill()
+    }
+
+    for (let r = 0; r < n; r++) {
+        for (let c = 0; c < n; c++) {
+            const cell = grid.value[r][c]
+            const isTree = cell.tree !== 'none'
+            if (!isTree && !cell.dark) continue
+
+            let a = 0
+            let R = 0, G = 0, B = 0
+            let ox = 0, oy = 0
+
+            if (isTree && cell.dark) {
+                const tR = cell.tree === 'leaf' ? lerp(30, 65, cell.shade) : 101
+                const tG = cell.tree === 'leaf' ? lerp(110, 155, cell.shade) : 67
+                const tB = cell.tree === 'leaf' ? lerp(30, 55, cell.shade) : 33
+                R = lerp(tR, qrR, t); G = lerp(tG, qrG, t); B = lerp(tB, qrB, t)
+                a = 1
+                ox = cell.ox * (1 - t); oy = cell.oy * (1 - t)
+            } else if (isTree) {
+                R = cell.tree === 'leaf' ? lerp(30, 65, cell.shade) : 101
+                G = cell.tree === 'leaf' ? lerp(110, 155, cell.shade) : 67
+                B = cell.tree === 'leaf' ? lerp(30, 55, cell.shade) : 33
+                a = Math.max(0, 1 - t * 2)
+                ox = cell.ox * (1 - t); oy = cell.oy * (1 - t)
+            } else {
+                R = qrR; G = qrG; B = qrB
+                a = Math.max(0, (t - 0.35) / 0.65)
+            }
+
+            if (a < 0.01) continue
+
+            ctx.globalAlpha = a
+            ctx.fillStyle = `rgb(${R | 0},${G | 0},${B | 0})`
+
+            const s = cs * lerp(0.6, 0.93, t)
+            const pad = (cs - s) / 2
+            const x = c * cs + pad + ox
+            const y = r * cs + pad + oy
+            const rad = lerp(s / 2, Math.min(2, s * 0.12), t)
+
+            ctx.beginPath()
+            ctx.roundRect(x, y, s, s, rad)
+            ctx.fill()
+        }
+    }
+    ctx.globalAlpha = 1
+}
+</script>
+
 <template>
-    <section class="pb-16 pt-36 md:pt-44">
-        <div class="mx-auto max-w-3xl px-6">
-            <h1 class="font-serif text-[clamp(3.5rem,12vw,8rem)] leading-[0.9] text-ink-900 dark:text-ink-100">
-                鄭翔駿
-            </h1>
-            <p class="mt-4 text-sm text-ink-400">前端工程師，Vue / Nuxt</p>
+    <section ref="sectionRef" class="relative" style="height: 180vh">
+        <div class="sticky top-0 flex h-screen flex-col justify-center">
+            <div class="mx-auto w-full max-w-[60vw]">
+                <div class="flex flex-col items-center gap-6 text-center md:flex-row md:items-end md:justify-between md:text-left">
+                    <div>
+                        <h1 class="font-serif text-[clamp(3.5rem,12vw,8rem)] leading-[0.9] text-ink-900 dark:text-ink-100">
+                            SIANG-JYUN
+                        </h1>
+                        <p class="mt-4 text-base text-ink-400">前端工程師，Vue / Nuxt</p>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-2">
+                        <canvas ref="canvasRef" />
+                        <p
+                            class="text-[14px] text-ink-400 transition-opacity duration-500"
+                            :style="{ opacity: scrollProgress > 0.85 ? 1 : 0 }"
+                        >
+                            Scan QR Code to visit GitHub
+                        </p>
+                    </div>
+                </div>
+
+                <p
+                    class="mt-8 text-center text-[14px] tracking-widest text-ink-300 transition-opacity duration-500 md:text-left"
+                    :style="{ opacity: scrollProgress < 0.2 ? 1 : 0 }"
+                >
+                    ↓
+                </p>
+            </div>
         </div>
     </section>
 </template>

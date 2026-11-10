@@ -4,7 +4,6 @@
         <AboutSection />
         <ExperienceSection />
         <ProjectsSection />
-        <TreeQRSection />
         <SkillsSection />
         <ContactSection />
     </div>

@@ -4696,12 +4696,12 @@ const assets = {
     "size": 102550,
     "path": "../public/1.jpg"
   },
-  "/favicon.ico": {
+  "/favicon_02.ico": {
     "type": "image/vnd.microsoft.icon",
     "etag": "\"10be-n8egyE9tcb7sKGr/pYCaQ4uWqxI\"",
     "mtime": "2025-03-07T12:40:25.227Z",
     "size": 4286,
-    "path": "../public/favicon.ico"
+    "path": "../public/favicon_02.ico"
   },
   "/icons8-gmail-144.png": {
     "type": "image/png",
@@ -5691,7 +5691,7 @@ function defineRenderHandler(render) {
     const ctx = { event, render, response: void 0 };
     await nitroApp.hooks.callHook("render:before", ctx);
     if (!ctx.response) {
-      if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
+      if (event.path === `${runtimeConfig.app.baseURL}favicon_02.ico`) {
         setResponseHeader(event, "Content-Type", "image/x-icon");
         return send(
           event,

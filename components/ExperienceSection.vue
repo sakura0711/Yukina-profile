@@ -40,21 +40,24 @@ const experiences = [
 
 <template>
     <section id="experience" class="pb-20">
-        <div class="mx-auto max-w-3xl px-6">
-            <h2 class="mb-10 font-serif text-2xl text-ink-900 dark:text-ink-100">經歷</h2>
+        <div class="mx-auto max-w-[80vw]">
+            <div class="mb-10 flex items-center gap-2">
+                <span class="material-symbols-outlined">commit</span>
+                <h2 class="font-serif text-2xl text-ink-900 dark:text-ink-100">經歷</h2>
+            </div>
 
             <div class="space-y-8">
                 <article v-for="exp in experiences" :key="exp.company">
                     <div class="flex items-baseline justify-between gap-4">
                         <h3 class="text-base font-medium text-ink-900 dark:text-ink-100">{{ exp.title }}</h3>
-                        <span class="shrink-0 text-sm text-ink-400">{{ exp.period }}</span>
+                        <span class="shrink-0 text-base text-ink-400">{{ exp.period }}</span>
                     </div>
-                    <p class="mt-0.5 text-sm text-ink-500">{{ exp.company }}</p>
+                    <p class="mt-0.5 text-base text-ink-500">{{ exp.company }}</p>
                     <ul class="mt-2 space-y-0.5">
                         <li
                             v-for="point in exp.points"
                             :key="point"
-                            class="text-sm text-ink-600 dark:text-ink-400"
+                            class="text-base text-ink-600 dark:text-ink-400"
                         >
                             {{ point }}
                         </li>
