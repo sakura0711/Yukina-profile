@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const sectionRef = ref<HTMLElement>()
 const canvasRef = ref<HTMLCanvasElement>()
 const scrollProgress = ref(0)
@@ -182,7 +183,7 @@ function draw() {
                 class="text-xs tracking-widest text-ink-400 transition-opacity duration-500"
                 :style="{ opacity: scrollProgress < 0.3 ? 1 : 0 }"
             >
-                Scroll Down
+                {{ t('treeQR.scrollDown') }}
             </p>
 
             <canvas ref="canvasRef" />
@@ -191,7 +192,7 @@ function draw() {
                 class="text-lg text-ink-500 transition-opacity duration-500"
                 :style="{ opacity: scrollProgress > 0.85 ? 1 : 0 }"
             >
-                Scan QR Code to visit GitHub
+                {{ t('treeQR.scanQR') }}
             </p>
         </div>
     </section>

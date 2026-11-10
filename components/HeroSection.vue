@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const sectionRef = ref<HTMLElement>()
 const canvasRef = ref<HTMLCanvasElement>()
 const scrollProgress = ref(0)
@@ -47,7 +48,11 @@ function treeType(r: number, c: number, n: number): 'leaf' | 'trunk' | 'none' {
 }
 
 function updateCanvasSize() {
-    const s = window.innerWidth < 768 ? 200 : 380
+    const w = window.innerWidth
+    const h = window.innerHeight
+    const byWidth = w < 640 ? 180 : w < 1280 ? Math.min(320, Math.round(w * 0.35)) : 380
+    const byHeight = Math.max(120, h - 400)
+    const s = Math.min(byWidth, byHeight)
     if (s !== canvasSize.value) {
         canvasSize.value = s
         draw()
@@ -186,10 +191,10 @@ function draw() {
 
 <template>
     <section ref="sectionRef" class="relative" style="height: 180vh">
-        <div class="sticky top-0 flex h-screen flex-col justify-center">
-            <div class="mx-auto w-full max-w-[60vw]">
-                <div class="flex flex-col items-center gap-6 text-center md:flex-row md:items-end md:justify-between md:text-left">
-                    <div>
+        <div class="sticky top-20 flex h-screen flex-col justify-center">
+            <div class="mx-auto w-full max-w-[80vw] 2xl:max-w-[60vw]">
+                <div class="flex flex-col items-center gap-6 text-center xl:flex-row xl:items-end xl:justify-between xl:text-left">
+                    <div class="min-w-0">
                         <h1 class="audiowide-regular text-[clamp(3.5rem,12vw,8rem)] leading-[0.9] text-ink-900 dark:text-ink-100">
                             SIANG-JYUN
                         </h1>
@@ -200,13 +205,13 @@ function draw() {
 
                     <div class="flex flex-col items-center gap-2">
                         <a href="https://github.com/sakura0711" target="_blank" rel="noopener noreferrer" class="cursor-pointer">
-                            <canvas ref="canvasRef" class="pointer-events-none" />
+                            <canvas ref="canvasRef" class="pointer-events-none max-w-full" />
                         </a>
                         <p
                             class="text-[15px] md:text-[20px] text-ink-400 transition-opacity duration-500"
                             :style="{ opacity: scrollProgress > 0.85 ? 1 : 0 }"
                         >
-                            Scan QR Code to visit GitHub
+                            {{ t('hero.scanQR') }}
                         </p>
                     </div>
                 </div>

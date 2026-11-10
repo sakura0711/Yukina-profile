@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 const form = reactive({
     name: '',
     email: '',
@@ -34,7 +36,7 @@ const handleSubmit = async () => {
         form.email = ''
         form.message = ''
     } catch {
-        toast('送出失敗，請直接寄信至 Email。', 'error')
+        toast(t('contact.error'), 'error')
     } finally {
         isSubmitting.value = false
     }
@@ -44,12 +46,12 @@ const handleSubmit = async () => {
 <template>
     <section id="contact" class="pb-20">
         <div class="mx-auto max-w-[80vw]">
-            
+
              <div class="mb-10 flex items-center gap-2">
                 <span class="material-symbols-outlined">alternate_email</span>
-                <h2 class="font-serif text-2xl text-ink-900 dark:text-ink-100">聯繫</h2>
+                <h2 class="font-serif text-2xl text-ink-900 dark:text-ink-100">{{ t('contact.title') }}</h2>
             </div>
-           
+
 
             <div class="space-y-3 text-base">
                 <a
@@ -70,19 +72,19 @@ const handleSubmit = async () => {
                 </a>
                 <p class="flex items-center gap-2 text-ink-400">
                     <span class="material-symbols-outlined text-[18px]">location_on</span>
-                    高雄 / 台南 / 嘉義
+                    {{ t('contact.location') }}
                 </p>
             </div>
 
             <div v-if="isSubmitted" class="mt-10">
-                <p class="text-base text-ink-500">訊息已送出，感謝您的聯繫。</p>
+                <p class="text-base text-ink-500">{{ t('contact.submitted') }}</p>
             </div>
 
             <form v-else class="mt-10 max-w-sm space-y-4" @submit.prevent="handleSubmit">
                 <input
                     v-model="form.name"
                     type="text"
-                    placeholder="姓名"
+                    :placeholder="t('contact.namePlaceholder')"
                     required
                     class="block w-full border-0 border-b border-ink-200 bg-transparent pb-2 text-base text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
                 />
@@ -96,7 +98,7 @@ const handleSubmit = async () => {
                 <textarea
                     v-model="form.message"
                     rows="3"
-                    placeholder="訊息"
+                    :placeholder="t('contact.messagePlaceholder')"
                     required
                     class="block w-full resize-none border-0 border-b border-ink-200 bg-transparent pb-2 text-base text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
                 ></textarea>
@@ -105,7 +107,7 @@ const handleSubmit = async () => {
                     :disabled="isSubmitting"
                     class="text-base text-ink-900 underline decoration-ink-300 underline-offset-4 transition-colors hover:decoration-ink-900 disabled:opacity-50 dark:text-ink-100 dark:decoration-ink-600 dark:hover:decoration-ink-100"
                 >
-                    {{ isSubmitting ? '送出中...' : '送出' }}
+                    {{ isSubmitting ? t('contact.submitting') : t('contact.submit') }}
                 </button>
             </form>
         </div>

@@ -3,13 +3,20 @@ const isScrolled = ref(false)
 const isMobileOpen = ref(false)
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
+const { t, locale, locales } = useI18n()
 
-const navLinks = [
-    { label: 'git log', href: '#experience' },
-    { label: 'ls projects/', href: '#projects' },
-    { label: 'plugins', href: '#skills' },
-    { label: '聯繫', href: '#contact' }
-]
+const navLinks = computed(() => [
+    { label: t('nav.gitLog'), href: '#experience' },
+    { label: t('nav.lsProjects'), href: '#projects' },
+    { label: t('nav.plugins'), href: '#skills' },
+    { label: t('nav.contact'), href: '#contact' }
+])
+
+function toggleLocale() {
+    const codes = (locales.value as { code: string }[]).map(l => l.code)
+    const idx = codes.indexOf(locale.value)
+    locale.value = codes[(idx + 1) % codes.length]
+}
 
 const handleScroll = () => {
     isScrolled.value = window.scrollY > 50
@@ -70,24 +77,39 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
 
                 <button
                     class="text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-100"
-                    aria-label="切換深色模式"
+                    :aria-label="t('nav.toggleDark')"
                     @click="toggleDark()"
                 >
                     <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" class="h-3.5 w-3.5" />
+                </button>
+
+                <button
+                    class="text-[13px] font-medium text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-100"
+                    aria-label="Switch language"
+                    @click="toggleLocale"
+                >
+                    {{ locale === 'zh-TW' ? 'EN' : '中' }}
                 </button>
             </div>
 
             <div class="flex items-center gap-3 md:hidden">
                 <button
                     class="text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-100"
-                    aria-label="切換深色模式"
+                    :aria-label="t('nav.toggleDark')"
                     @click="toggleDark()"
                 >
                     <Icon :name="isDark ? 'lucide:sun' : 'lucide:moon'" class="h-3.5 w-3.5" />
                 </button>
                 <button
+                    class="text-[13px] font-medium text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-100"
+                    aria-label="Switch language"
+                    @click="toggleLocale"
+                >
+                    {{ locale === 'zh-TW' ? 'EN' : '中' }}
+                </button>
+                <button
                     class="text-ink-400 transition-colors hover:text-ink-900 dark:text-ink-500 dark:hover:text-ink-100"
-                    aria-label="選單"
+                    :aria-label="t('nav.menu')"
                     @click="isMobileOpen = !isMobileOpen"
                 >
                     <Icon :name="isMobileOpen ? 'lucide:x' : 'lucide:menu'" class="h-4 w-4" />

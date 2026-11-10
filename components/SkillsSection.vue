@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const categories = [
+const { t } = useI18n()
+
+const categories = computed(() => [
     {
         label: 'Frontend',
         icon: 'web',
@@ -33,9 +35,9 @@ const categories = [
     {
         label: 'Certification',
         icon: 'verified',
-        items: ['ISO 27001 ISMS 主導稽核員']
+        items: [t('skills.certification')]
     }
-]
+])
 </script>
 
 <template>
@@ -44,7 +46,7 @@ const categories = [
 
             <div class="mb-10 flex items-center gap-2">
                 <span class="material-symbols-outlined">extension</span>
-                <h2 class="font-serif text-2xl text-ink-900 dark:text-ink-100">技能</h2>
+                <h2 class="font-serif text-2xl text-ink-900 dark:text-ink-100">{{ t('skills.title') }}</h2>
             </div>
 
             <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">

@@ -1,0 +1,129 @@
+{
+  "nav": {
+    "gitLog": "git log",
+    "lsProjects": "ls projects/",
+    "plugins": "plugins",
+    "contact": "Contact",
+    "toggleDark": "Toggle dark mode",
+    "menu": "Menu"
+  },
+  "hero": {
+    "scanQR": "Scan QR Code to visit GitHub"
+  },
+  "about": {
+    "bio": "Graduated from I-Shou University, Dept. of Computer Science & Information Engineering, with 2+ years of frontend experience. Interned at ITRI in smart healthcare, co-founded the VecStruct AI platform. Skilled in Vue 3 / Nuxt development from scratch to deployment, certified ISO 27001 Lead Auditor."
+  },
+  "experience": {
+    "title": "Experience",
+    "items": [
+      {
+        "title": "Co-Founder / Frontend Engineer",
+        "company": "Vamos Internet Co., Ltd.",
+        "period": "2025.10 — Present",
+        "points": [
+          "Independently developed VecStruct AI platform website frontend",
+          "Collaborated with backend team to define API specs and integrate RESTful APIs",
+          "MediaPipe image recognition App (published on Android / iOS)"
+        ]
+      },
+      {
+        "title": "Smart Healthcare AMR Engineering Assistant",
+        "company": "Industrial Technology Research Institute (ITRI)",
+        "period": "2024.08 — 2025.02",
+        "points": [
+          "AMR hospital route validation and end-to-end operation testing",
+          "YOLOv8 dynamic obstacle scenario testing",
+          "Cross-team communication and data analysis"
+        ]
+      },
+      {
+        "title": "Frontend Engineer",
+        "company": "I-Shou University USR Industry-Academia Collaboration",
+        "period": "2023.09 — 2025.05",
+        "points": [
+          "Vue 3 + Vite + Bootstrap 5 farmland contract management system",
+          "System deployed and in production use"
+        ]
+      },
+      {
+        "title": "Frontend Web Maintenance",
+        "company": "I-Shou University",
+        "period": "2023.05 — 2025.02",
+        "points": [
+          "Campus website announcement system maintenance and performance optimization"
+        ]
+      }
+    ]
+  },
+  "skills": {
+    "title": "Skills",
+    "certification": "ISO 27001 ISMS Lead Auditor"
+  },
+  "projects": {
+    "title": "Projects",
+    "items": [
+      {
+        "name": "VecStruct",
+        "description": "All-in-one AI platform supporting 100+ model calls and document knowledge base.",
+        "role": "Co-Founder / Frontend Engineer",
+        "period": "2025.10 — Present",
+        "details": [
+          "Independently developed platform website frontend, built component architecture from scratch",
+          "Collaborated with backend to define API specs and integrate RESTful APIs",
+          "Supports 100+ AI model calls and document knowledge base",
+          "Responsive design for desktop and mobile devices"
+        ]
+      },
+      {
+        "name": "Farmland Contract Management System",
+        "description": "Serving Xinfeng Rice Mill, built frontend architecture from scratch, deployed in production.",
+        "role": "Frontend Engineer",
+        "period": "2023.09 — 2025.05",
+        "details": [
+          "I-Shou University USR industry-academia collaboration project",
+          "Built frontend architecture from scratch, independently developed all pages",
+          "Farmland contract data CRUD and report visualization",
+          "System deployed and in production use"
+        ]
+      },
+      {
+        "name": "Pregnancy Exercise Assistant App",
+        "description": "MediaPipe real-time motion detection, published on Android / iOS.",
+        "role": "Mobile Developer",
+        "details": [
+          "MediaPipe real-time body skeleton detection and motion recognition",
+          "Designed exercise guidance flow for pregnant women's safe workouts",
+          "Published on Google Play and App Store"
+        ]
+      },
+      {
+        "name": "E-Commerce Shopping Cart Website",
+        "description": "WordPress full-site build with shopping cart and checkout flow.",
+        "role": "Full-Stack Developer",
+        "details": [
+          "WordPress + WooCommerce full-site build",
+          "Complete shopping cart, checkout, and payment integration flow",
+          "Product management and order tracking backend"
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contact",
+    "location": "Kaohsiung / Tainan / Chiayi",
+    "submitted": "Message sent. Thank you for reaching out.",
+    "namePlaceholder": "Name",
+    "messagePlaceholder": "Message",
+    "submit": "Send",
+    "submitting": "Sending...",
+    "error": "Failed to send. Please email directly."
+  },
+  "treeQR": {
+    "scrollDown": "Scroll Down",
+    "scanQR": "Scan QR Code to visit GitHub"
+  },
+  "meta": {
+    "title": "SIANG-JYUN | Frontend Engineer — Portfolio",
+    "description": "Frontend engineer SIANG-JYUN's portfolio. Vue 3 / Nuxt / TypeScript, ITRI internship, ISO 27001 Lead Auditor."
+  }
+}

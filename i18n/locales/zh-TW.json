@@ -1,0 +1,129 @@
+{
+  "nav": {
+    "gitLog": "git log",
+    "lsProjects": "ls projects/",
+    "plugins": "plugins",
+    "contact": "聯繫",
+    "toggleDark": "切換深色模式",
+    "menu": "選單"
+  },
+  "hero": {
+    "scanQR": "Scan QR Code to visit GitHub"
+  },
+  "about": {
+    "bio": "義守大學資工系畢業，2 年以上前端經驗。工研院智慧醫療實習、VecStruct AI 平台共同創辦人。擅長 Vue 3 / Nuxt 開發，從零搭建到部署，持有 ISO 27001 主導稽核員證照。"
+  },
+  "experience": {
+    "title": "經歷",
+    "items": [
+      {
+        "title": "共同創辦人 / 前端工程師",
+        "company": "瓦默思網路有限公司",
+        "period": "2025.10 — 至今",
+        "points": [
+          "獨立開發 VecStruct AI 平台官網前端",
+          "與後端協作制定 API 規格，完成 RESTful API 串接",
+          "MediaPipe 影像辨識 App（Android / iOS 雙平台上架）"
+        ]
+      },
+      {
+        "title": "智慧醫療 AMR 工程助理",
+        "company": "工業技術研究院",
+        "period": "2024.08 — 2025.02",
+        "points": [
+          "AMR 醫院場域路徑驗證與端到端運行測試",
+          "YOLOv8 動態障礙物情境測試",
+          "跨團隊溝通與數據記錄分析"
+        ]
+      },
+      {
+        "title": "前端工程師",
+        "company": "義守大學 USR 產學合作",
+        "period": "2023.09 — 2025.05",
+        "points": [
+          "Vue 3 + Vite + Bootstrap 5 農地契作管理系統",
+          "系統已上線投入生產使用"
+        ]
+      },
+      {
+        "title": "前端網頁維護",
+        "company": "義守大學",
+        "period": "2023.05 — 2025.02",
+        "points": [
+          "校園網站公告系統維護與效能優化"
+        ]
+      }
+    ]
+  },
+  "skills": {
+    "title": "技能",
+    "certification": "ISO 27001 ISMS 主導稽核員"
+  },
+  "projects": {
+    "title": "參與過的專案",
+    "items": [
+      {
+        "name": "VecStruct",
+        "description": "一站式 AI 平台，支援 100+ 模型調用與文件知識庫。",
+        "role": "共同創辦人 / 前端工程師",
+        "period": "2025.10 — 至今",
+        "details": [
+          "獨立開發平台官網前端，從零搭建元件架構",
+          "與後端協作制定 API 規格，完成 RESTful API 串接",
+          "支援 100+ AI 模型調用與文件知識庫功能",
+          "響應式設計，支援桌面與行動裝置"
+        ]
+      },
+      {
+        "name": "農地契作管理系統",
+        "description": "服務新豐碾米廠，從零搭建前端架構，已上線生產使用。",
+        "role": "前端工程師",
+        "period": "2023.09 — 2025.05",
+        "details": [
+          "義守大學 USR 產學合作專案",
+          "從零搭建前端架構，獨立負責全部頁面開發",
+          "農地契作資料 CRUD 與報表視覺化",
+          "系統已上線投入生產使用"
+        ]
+      },
+      {
+        "name": "孕婦運動輔助 App",
+        "description": "MediaPipe 即時動作偵測，已上架 Android / iOS。",
+        "role": "行動端開發",
+        "details": [
+          "MediaPipe 即時人體骨架偵測與動作判定",
+          "針對孕婦安全運動設計動作引導流程",
+          "已上架 Google Play 與 App Store"
+        ]
+      },
+      {
+        "name": "購物車電商網站",
+        "description": "WordPress 全站建置，含購物車與結帳流程。",
+        "role": "全端開發",
+        "details": [
+          "WordPress + WooCommerce 全站建置",
+          "購物車、結帳、金流串接完整流程",
+          "商品管理與訂單追蹤後台"
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "title": "聯繫",
+    "location": "高雄 / 台南 / 嘉義",
+    "submitted": "訊息已送出，感謝您的聯繫。",
+    "namePlaceholder": "姓名",
+    "messagePlaceholder": "訊息",
+    "submit": "送出",
+    "submitting": "送出中...",
+    "error": "送出失敗，請直接寄信至 Email。"
+  },
+  "treeQR": {
+    "scrollDown": "Scroll Down",
+    "scanQR": "Scan QR Code to visit GitHub"
+  },
+  "meta": {
+    "title": "SIANG-JYUN | 前端工程師 — Portfolio",
+    "description": "前端工程師SIANG-JYUN的個人作品集，Vue 3 / Nuxt / TypeScript，工研院實習經歷，ISO 27001 主導稽核員。"
+  }
+}

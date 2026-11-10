@@ -7,7 +7,16 @@ export default defineNuxtConfig({
         port: 5173
     },
 
-    modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', '@nuxt/icon'],
+    modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt', '@nuxt/icon', '@nuxtjs/i18n'],
+
+    i18n: {
+        locales: [
+            { code: 'zh-TW', name: '中文' },
+            { code: 'en-US', name: 'English' }
+        ],
+        defaultLocale: 'zh-TW',
+        strategy: 'no_prefix'
+    },
 
     css: ['~/assets/css/main.css'],
 

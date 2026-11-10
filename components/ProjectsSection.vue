@@ -1,7 +1,43 @@
 <script setup lang="ts">
-const selectedProject = ref<typeof projects[number] | null>(null)
+const { t, tm } = useI18n()
 
-function open(project: typeof projects[number]) {
+const selectedProject = ref<typeof localizedProjects.value[number] | null>(null)
+
+const tags = [
+    ['Vue.js', 'TypeScript', 'RESTful API', 'Nuxt', 'Tailwind CSS'],
+    ['Vue 3', 'Vite', 'Pinia', 'Bootstrap 5'],
+    ['MediaPipe', 'Android Native', 'Kotlin'],
+    ['WordPress', 'WooCommerce', 'PHP']
+]
+
+const links = [
+    'https://vecstruct.com',
+    null,
+    null,
+    'https://jushop.vmsn.dev'
+]
+
+const images = [
+    '/images/projects/vecstruct.png',
+    '/images/projects/farmland.png',
+    '/images/projects/pregnancy-app.png',
+    '/images/projects/jushop.png'
+]
+
+const localizedProjects = computed(() =>
+    (tm('projects.items') as any[]).map((item, i) => ({
+        name: item.name,
+        description: item.description,
+        role: item.role,
+        period: item.period,
+        details: item.details,
+        tags: tags[i],
+        link: links[i],
+        image: images[i]
+    }))
+)
+
+function open(project: typeof localizedProjects.value[number]) {
     selectedProject.value = project
     document.body.style.overflow = 'hidden'
 }
@@ -21,65 +57,6 @@ function onKey(e: KeyboardEvent) {
 
 onMounted(() => window.addEventListener('keydown', onKey))
 onUnmounted(() => window.removeEventListener('keydown', onKey))
-
-const projects = [
-    {
-        name: 'VecStruct',
-        description: '一站式 AI 平台，支援 100+ 模型調用與文件知識庫。',
-        tags: ['Vue.js', 'TypeScript', 'RESTful API', 'Nuxt', 'Tailwind CSS'],
-        link: 'https://vecstruct.com',
-        image: '/images/projects/vecstruct.png',
-        role: '共同創辦人 / 前端工程師',
-        period: '2025.10 — 至今',
-        details: [
-            '獨立開發平台官網前端，從零搭建元件架構',
-            '與後端協作制定 API 規格，完成 RESTful API 串接',
-            '支援 100+ AI 模型調用與文件知識庫功能',
-            '響應式設計，支援桌面與行動裝置'
-        ]
-    },
-    {
-        name: '農地契作管理系統',
-        description: '服務新豐碾米廠，從零搭建前端架構，已上線生產使用。',
-        tags: ['Vue 3', 'Vite', 'Pinia', 'Bootstrap 5'],
-        link: null,
-        image: '/images/projects/farmland.png',
-        role: '前端工程師',
-        period: '2023.09 — 2025.05',
-        details: [
-            '義守大學 USR 產學合作專案',
-            '從零搭建前端架構，獨立負責全部頁面開發',
-            '農地契作資料 CRUD 與報表視覺化',
-            '系統已上線投入生產使用'
-        ]
-    },
-    {
-        name: '孕婦運動輔助 App',
-        description: 'MediaPipe 即時動作偵測，已上架 Android / iOS。',
-        tags: ['MediaPipe', 'Android Native', 'Kotlin'],
-        link: null,
-        image: '/images/projects/pregnancy-app.png',
-        role: '行動端開發',
-        details: [
-            'MediaPipe 即時人體骨架偵測與動作判定',
-            '針對孕婦安全運動設計動作引導流程',
-            '已上架 Google Play 與 App Store'
-        ]
-    },
-    {
-        name: '購物車電商網站',
-        description: 'WordPress 全站建置，含購物車與結帳流程。',
-        tags: ['WordPress', 'WooCommerce', 'PHP'],
-        link: 'https://jushop.vmsn.dev',
-        image: '/images/projects/jushop.png',
-        role: '全端開發',
-        details: [
-            'WordPress + WooCommerce 全站建置',
-            '購物車、結帳、金流串接完整流程',
-            '商品管理與訂單追蹤後台'
-        ]
-    }
-]
 </script>
 
 <template>
@@ -88,11 +65,11 @@ const projects = [
 
             <div class="mb-10 flex items-center gap-2">
                 <span class="material-symbols-outlined">polymer</span>
-                <h2 class="font-serif text-2xl text-ink-900 dark:text-ink-100">參與過的專案</h2>
+                <h2 class="font-serif text-2xl text-ink-900 dark:text-ink-100">{{ t('projects.title') }}</h2>
             </div>
             <div class="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2">
                 <article
-                    v-for="project in projects"
+                    v-for="project in localizedProjects"
                     :key="project.name"
                     class="group cursor-pointer"
                     @click="open(project)"
@@ -166,8 +143,8 @@ const projects = [
                         <div v-if="selectedProject.details?.length" class="mt-5 border-t border-ink-200/50 pt-4 dark:border-ink-700/50">
                             <ul class="space-y-2">
                                 <li
-                                    v-for="item in selectedProject.details"
-                                    :key="item"
+                                    v-for="(item, idx) in selectedProject.details"
+                                    :key="idx"
                                     class="flex gap-2.5 text-base leading-relaxed text-ink-600 dark:text-ink-400"
                                 >
                                     <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-300 dark:bg-ink-600" />
