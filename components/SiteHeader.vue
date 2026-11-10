@@ -44,7 +44,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
                 : 'bg-transparent'
         ]"
     >
-        <nav class="mx-auto flex max-w-[60vw] items-center justify-between py-5">
+        <nav class="mx-auto flex max-w-[80vw] md:max-w-[60vw] items-center justify-between py-5">
             <a
                 href="#"
                 class="flex items-center gap-1 text-base text-ink-900 dark:text-ink-100"

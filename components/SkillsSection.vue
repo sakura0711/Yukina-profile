@@ -29,6 +29,11 @@ const categories = [
         label: 'Design / Media',
         icon: 'palette',
         items: ['Photoshop', 'Premiere Pro']
+    },
+    {
+        label: 'Certification',
+        icon: 'verified',
+        items: ['ISO 27001 ISMS 主導稽核員']
     }
 ]
 </script>
@@ -54,7 +59,6 @@ const categories = [
                 </div>
             </div>
 
-            <p class="mt-8 text-base text-ink-500">ISO 27001 ISMS 主導稽核員</p>
         </div>
     </section>
 </template>

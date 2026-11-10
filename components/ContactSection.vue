@@ -7,6 +7,19 @@ const form = reactive({
 
 const isSubmitting = ref(false)
 const isSubmitted = ref(false)
+const toastMessage = ref('')
+const toastType = ref<'success' | 'error'>('success')
+const showToast = ref(false)
+
+let toastTimer: ReturnType<typeof setTimeout>
+
+function toast(message: string, type: 'success' | 'error' = 'success') {
+    toastMessage.value = message
+    toastType.value = type
+    showToast.value = true
+    clearTimeout(toastTimer)
+    toastTimer = setTimeout(() => { showToast.value = false }, 4000)
+}
 
 const handleSubmit = async () => {
     isSubmitting.value = true
@@ -21,7 +34,7 @@ const handleSubmit = async () => {
         form.email = ''
         form.message = ''
     } catch {
-        alert('送出失敗，請直接寄信至 Email。')
+        toast('送出失敗，請直接寄信至 Email。', 'error')
     } finally {
         isSubmitting.value = false
     }
@@ -31,24 +44,34 @@ const handleSubmit = async () => {
 <template>
     <section id="contact" class="pb-20">
         <div class="mx-auto max-w-[80vw]">
-            <h2 class="mb-10 font-serif text-2xl text-ink-900 dark:text-ink-100">聯繫</h2>
+            
+             <div class="mb-10 flex items-center gap-2">
+                <span class="material-symbols-outlined">alternate_email</span>
+                <h2 class="font-serif text-2xl text-ink-900 dark:text-ink-100">聯繫</h2>
+            </div>
+           
 
-            <div class="space-y-2 text-base">
+            <div class="space-y-3 text-base">
                 <a
-                    href="mailto:vamosnet2025@gmail.com"
-                    class="block text-ink-600 transition-colors hover:text-ink-900 dark:text-ink-400 dark:hover:text-ink-100"
+                    href="mailto:csiangjyun@gmail.com"
+                    class="flex items-center gap-2 text-ink-600 transition-colors hover:text-ink-900 dark:text-ink-400 dark:hover:text-ink-100"
                 >
-                    vamosnet2025@gmail.com
+                    <span class="material-symbols-outlined text-[18px]">mail</span>
+                    csiangjyun@gmail.com
                 </a>
                 <a
                     href="https://github.com/sakura0711"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="block text-ink-600 transition-colors hover:text-ink-900 dark:text-ink-400 dark:hover:text-ink-100"
+                    class="flex items-center gap-2 text-ink-600 transition-colors hover:text-ink-900 dark:text-ink-400 dark:hover:text-ink-100"
                 >
+                    <span class="material-symbols-outlined text-[18px]">code</span>
                     github.com/sakura0711
                 </a>
-                <p class="text-ink-400">台南 / 高雄 / 台中</p>
+                <p class="flex items-center gap-2 text-ink-400">
+                    <span class="material-symbols-outlined text-[18px]">location_on</span>
+                    高雄 / 台南 / 嘉義
+                </p>
             </div>
 
             <div v-if="isSubmitted" class="mt-10">
@@ -87,4 +110,44 @@ const handleSubmit = async () => {
             </form>
         </div>
     </section>
+
+    <Teleport to="body">
+        <Transition name="toast">
+            <div
+                v-if="showToast"
+                class="fixed bottom-8 left-1/2 z-[70] -translate-x-1/2"
+            >
+                <div
+                    class="flex items-center gap-2 rounded-md border px-5 py-3 text-sm shadow-lg backdrop-blur-md"
+                    :class="toastType === 'error'
+                        ? 'border-red-200/30 bg-red-50/80 text-red-800 dark:border-red-800/30 dark:bg-red-950/80 dark:text-red-300'
+                        : 'border-ink-200/30 bg-ink-50/80 text-ink-700 dark:border-ink-700/30 dark:bg-ink-900/80 dark:text-ink-300'"
+                >
+                    <span class="material-symbols-outlined text-[18px]">
+                        {{ toastType === 'error' ? 'error' : 'check_circle' }}
+                    </span>
+                    {{ toastMessage }}
+                    <button
+                        class="ml-2 opacity-40 transition-opacity hover:opacity-100"
+                        @click="showToast = false"
+                    >
+                        <span class="material-symbols-outlined text-[16px]">close</span>
+                    </button>
+                </div>
+            </div>
+        </Transition>
+    </Teleport>
 </template>
+
+<style scoped>
+.toast-enter-active,
+.toast-leave-active {
+    transition: all 0.3s ease;
+}
+
+.toast-enter-from,
+.toast-leave-to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+}
+</style>

@@ -40,7 +40,7 @@ const experiences = [
 
 <template>
     <section id="experience" class="pb-20">
-        <div class="mx-auto max-w-[80vw]">
+        <div class="mx-auto max-w-[80vw] md:max-w-[70vw]">
             <div class="mb-10 flex items-center gap-2">
                 <span class="material-symbols-outlined">commit</span>
                 <h2 class="font-serif text-2xl text-ink-900 dark:text-ink-100">經歷</h2>

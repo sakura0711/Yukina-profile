@@ -47,7 +47,7 @@ function treeType(r: number, c: number, n: number): 'leaf' | 'trunk' | 'none' {
 }
 
 function updateCanvasSize() {
-    const s = window.innerWidth < 768 ? 140 : 200
+    const s = window.innerWidth < 768 ? 200 : 380
     if (s !== canvasSize.value) {
         canvasSize.value = s
         draw()
@@ -190,16 +190,20 @@ function draw() {
             <div class="mx-auto w-full max-w-[60vw]">
                 <div class="flex flex-col items-center gap-6 text-center md:flex-row md:items-end md:justify-between md:text-left">
                     <div>
-                        <h1 class="font-serif text-[clamp(3.5rem,12vw,8rem)] leading-[0.9] text-ink-900 dark:text-ink-100">
+                        <h1 class="audiowide-regular text-[clamp(3.5rem,12vw,8rem)] leading-[0.9] text-ink-900 dark:text-ink-100">
                             SIANG-JYUN
                         </h1>
-                        <p class="mt-4 text-base text-ink-400">前端工程師，Vue / Nuxt</p>
+                        <p class="mt-8 leading-8 text-[15px] md:text-[20px] text-ink-400">
+                            Don't fight the problem, decide it. <br/>
+                            - George C. Marshall</p>
                     </div>
 
                     <div class="flex flex-col items-center gap-2">
-                        <canvas ref="canvasRef" />
+                        <a href="https://github.com/sakura0711" target="_blank" rel="noopener noreferrer" class="cursor-pointer">
+                            <canvas ref="canvasRef" class="pointer-events-none" />
+                        </a>
                         <p
-                            class="text-[14px] text-ink-400 transition-opacity duration-500"
+                            class="text-[15px] md:text-[20px] text-ink-400 transition-opacity duration-500"
                             :style="{ opacity: scrollProgress > 0.85 ? 1 : 0 }"
                         >
                             Scan QR Code to visit GitHub
@@ -207,13 +211,46 @@ function draw() {
                     </div>
                 </div>
 
-                <p
-                    class="mt-8 text-center text-[14px] tracking-widest text-ink-300 transition-opacity duration-500 md:text-left"
-                    :style="{ opacity: scrollProgress < 0.2 ? 1 : 0 }"
-                >
+            </div>
+
+            <div
+                class="arrow-float absolute bottom-[100px] left-1/2 -translate-x-1/2 transition-opacity duration-500"
+                :style="{ opacity: scrollProgress < 0.2 ? 1 : 0 }"
+            >
+                <span class="arrow-glow relative flex items-center justify-center text-2xl tracking-widest text-ink-300">
                     ↓
-                </p>
+                </span>
             </div>
         </div>
     </section>
 </template>
+
+<style scoped>
+.arrow-glow::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(168, 162, 158, 0.15) 0%, transparent 70%);
+    filter: blur(8px);
+    animation: breathe 3s ease-in-out infinite;
+}
+
+:root.dark .arrow-glow::before {
+    background: radial-gradient(circle, rgba(168, 162, 158, 0.1) 0%, transparent 70%);
+}
+
+@keyframes breathe {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+.arrow-float {
+    animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-8px); }
+}
+</style>

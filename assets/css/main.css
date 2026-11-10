@@ -4,6 +4,7 @@
 
 html {
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
 }
 
 body {
@@ -17,4 +18,45 @@ body {
         background-color: #44403c;
         color: #faf9f7;
     }
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(120, 113, 108, 0.3) transparent;
+    }
+
+    .dark * {
+        scrollbar-color: rgba(168, 162, 158, 0.25) transparent;
+    }
+
+    *::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: rgba(120, 113, 108, 0.3);
+        border-radius: 4px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        background: rgba(120, 113, 108, 0.5);
+    }
+
+    .dark *::-webkit-scrollbar-thumb {
+        background: rgba(168, 162, 158, 0.25);
+    }
+
+    .dark *::-webkit-scrollbar-thumb:hover {
+        background: rgba(168, 162, 158, 0.4);
+    }
+    
+    .audiowide-regular {
+        font-family: "Audiowide", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+
 }

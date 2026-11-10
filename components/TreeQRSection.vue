@@ -2,7 +2,8 @@
 const sectionRef = ref<HTMLElement>()
 const canvasRef = ref<HTMLCanvasElement>()
 const scrollProgress = ref(0)
-const SIZE = 280
+const SIZE = 380
+const canvasSize = ref(0)
 const moduleCount = ref(0)
 
 interface Cell {
@@ -21,6 +22,11 @@ function lerp(a: number, b: number, t: number) {
 
 function ease(t: number) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+}
+
+function updateCanvasSize() {
+    canvasSize.value = Math.max(1, Math.min(SIZE, window.innerWidth - 48, window.innerHeight - 120))
+    draw()
 }
 
 function treeType(r: number, c: number, n: number): 'leaf' | 'trunk' | 'none' {
@@ -46,6 +52,9 @@ function treeType(r: number, c: number, n: number): 'leaf' | 'trunk' | 'none' {
 }
 
 onMounted(async () => {
+    updateCanvasSize()
+    window.addEventListener('resize', updateCanvasSize)
+
     const QR = (await import('qrcode-generator')).default
     const qr = QR(0, 'L')
     qr.addData('https://github.com/sakura0711')
@@ -77,6 +86,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
     window.removeEventListener('scroll', onScroll)
+    window.removeEventListener('resize', updateCanvasSize)
 })
 
 let raf = 0
@@ -96,23 +106,24 @@ function draw() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    const size = canvasSize.value
     const dpr = window.devicePixelRatio || 1
-    canvas.width = SIZE * dpr
-    canvas.height = SIZE * dpr
-    canvas.style.width = SIZE + 'px'
-    canvas.style.height = SIZE + 'px'
+    canvas.width = size * dpr
+    canvas.height = size * dpr
+    canvas.style.width = size + 'px'
+    canvas.style.height = size + 'px'
     ctx.scale(dpr, dpr)
 
     const t = ease(Math.max(0, Math.min(1, (scrollProgress.value - 0.15) / 0.6)))
     const n = moduleCount.value
-    const cs = SIZE / n
+    const cs = size / n
 
-    ctx.clearRect(0, 0, SIZE, SIZE)
+    ctx.clearRect(0, 0, size, size)
 
     if (t > 0.05) {
         ctx.fillStyle = `rgba(250,249,247,${Math.min(1, t / 0.5)})`
         ctx.beginPath()
-        ctx.roundRect(-4, -4, SIZE + 8, SIZE + 8, 12)
+        ctx.roundRect(-4, -4, size + 8, size + 8, 12)
         ctx.fill()
     }
 
@@ -177,7 +188,7 @@ function draw() {
             <canvas ref="canvasRef" />
 
             <p
-                class="text-sm text-ink-500 transition-opacity duration-500"
+                class="text-lg text-ink-500 transition-opacity duration-500"
                 :style="{ opacity: scrollProgress > 0.85 ? 1 : 0 }"
             >
                 Scan QR Code to visit GitHub
