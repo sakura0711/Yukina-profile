@@ -112,7 +112,7 @@ function draw() {
     canvas.width = size * dpr
     canvas.height = size * dpr
     canvas.style.width = size + 'px'
-    canvas.style.height = size + 'px'
+    canvas.style.height = 'auto'
     ctx.scale(dpr, dpr)
 
     const t = ease(Math.max(0, Math.min(1, (scrollProgress.value - 0.15) / 0.6)))
@@ -186,7 +186,7 @@ function draw() {
                 {{ t('treeQR.scrollDown') }}
             </p>
 
-            <canvas ref="canvasRef" />
+            <canvas ref="canvasRef" class="block aspect-square max-w-full shrink-0" />
 
             <p
                 class="text-lg text-ink-500 transition-opacity duration-500"

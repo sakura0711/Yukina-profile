@@ -121,7 +121,7 @@ function draw() {
     canvas.width = SIZE * dpr
     canvas.height = SIZE * dpr
     canvas.style.width = SIZE + 'px'
-    canvas.style.height = SIZE + 'px'
+    canvas.style.height = 'auto'
     ctx.scale(dpr, dpr)
 
     const t = ease(Math.max(0, Math.min(1, (scrollProgress.value - 0.15) / 0.6)))
@@ -203,9 +203,9 @@ function draw() {
                             - George C. Marshall</p>
                     </div>
 
-                    <div class="flex flex-col items-center gap-2">
-                        <a href="https://github.com/sakura0711" target="_blank" rel="noopener noreferrer" class="cursor-pointer">
-                            <canvas ref="canvasRef" class="pointer-events-none max-w-full" />
+                    <div class="flex min-w-0 max-w-full flex-col items-center gap-2">
+                        <a href="https://github.com/sakura0711" target="_blank" rel="noopener noreferrer" class="max-w-full cursor-pointer">
+                            <canvas ref="canvasRef" class="pointer-events-none block aspect-square max-w-full" />
                         </a>
                         <p
                             class="text-[15px] md:text-[20px] text-ink-400 transition-opacity duration-500"
