@@ -64,7 +64,8 @@ export default defineNuxtConfig({
                         '鄭翔駿 (SIANG-JYUN) — 前端工程師作品集。Vue 3 / Nuxt / TypeScript 全端開發，工研院智慧醫療 AMR 實習經歷，共創 VecStruct AI 平台，ISO 27001 主導稽核員認證。'
                 },
                 { name: 'twitter:image', content: 'https://www.sakurayukina.com/images/projects/vecstruct.png' },
-                { name: 'author', content: 'SIANG-JYUN' }
+                { name: 'author', content: 'SIANG-JYUN' },
+                { name: 'google-site-verification', content: 'xda8Sr-hW7nInlORT40XVP23rs-HLV18cKfl5DnfNLQ' }
             ],
             link: [
                 { rel: 'canonical', href: 'https://www.sakurayukina.com/' },
