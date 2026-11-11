@@ -18,10 +18,10 @@ const links = [
 ]
 
 const images = [
-    '/images/projects/vecstruct.png',
-    '/images/projects/farmland.png',
-    '/images/projects/pregnancy-app.png',
-    '/images/projects/jushop.png'
+    { src: '/images/projects/vecstruct.png', width: 1587, height: 991 },
+    { src: '/images/projects/farmland.png', width: 1920, height: 1080 },
+    { src: '/images/projects/pregnancy-app.png', width: 1672, height: 941 },
+    { src: '/images/projects/jushop.png', width: 1972, height: 1120 }
 ]
 
 const localizedProjects = computed(() =>
@@ -33,7 +33,9 @@ const localizedProjects = computed(() =>
         details: item.details,
         tags: tags[i],
         link: links[i],
-        image: images[i]
+        image: images[i].src,
+        imageWidth: images[i].width,
+        imageHeight: images[i].height
     }))
 )
 
@@ -78,8 +80,10 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
                         <img
                             :src="project.image"
                             :alt="project.name"
+                            :width="project.imageWidth"
+                            :height="project.imageHeight"
                             class="h-full w-full object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
-                            loading="lazy"
+                            :loading="project === localizedProjects[0] ? 'eager' : 'lazy'"
                             @error="($event.target as HTMLImageElement).style.display = 'none'"
                         />
                     </div>

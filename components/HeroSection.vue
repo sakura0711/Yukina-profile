@@ -204,7 +204,7 @@ function draw() {
                     </div>
 
                     <div class="flex min-w-0 max-w-full flex-col items-center gap-2">
-                        <a href="https://github.com/sakura0711" target="_blank" rel="noopener noreferrer" class="max-w-full cursor-pointer">
+                        <a href="https://github.com/sakura0711" target="_blank" rel="noopener noreferrer" aria-label="Visit GitHub profile" class="max-w-full cursor-pointer">
                             <canvas ref="canvasRef" class="pointer-events-none block aspect-square max-w-full" />
                         </a>
                         <p
