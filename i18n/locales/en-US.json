@@ -116,7 +116,8 @@
         "messagePlaceholder": "Message",
         "submit": "Send",
         "submitting": "Sending...",
-        "error": "Failed to send. Please email directly."
+        "error": "Failed to send. Please email directly.",
+        "rateLimit": "Too many submissions. Please try again later."
     },
     "treeQR": {
         "scrollDown": "Scroll Down",

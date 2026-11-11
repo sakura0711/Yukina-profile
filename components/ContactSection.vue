@@ -1,10 +1,12 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const formEndpoint = 'https://formspree.io/f/mvkapqlb'
 
 const form = reactive({
     name: '',
     email: '',
-    message: ''
+    message: '',
+    _gotcha: ''
 })
 
 const isSubmitting = ref(false)
@@ -23,20 +25,24 @@ function toast(message: string, type: 'success' | 'error' = 'success') {
     toastTimer = setTimeout(() => { showToast.value = false }, 4000)
 }
 
-const handleSubmit = async () => {
+const handleSubmit = async (event: Event) => {
+    if (isSubmitting.value) return
+
     isSubmitting.value = true
     try {
-        await $fetch('https://formspree.io/f/xwpkjqgd', {
+        await $fetch(formEndpoint, {
             method: 'POST',
             headers: { Accept: 'application/json' },
-            body: form
+            body: new FormData(event.currentTarget as HTMLFormElement)
         })
         isSubmitted.value = true
         form.name = ''
         form.email = ''
         form.message = ''
-    } catch {
-        toast(t('contact.error'), 'error')
+        form._gotcha = ''
+    } catch (error) {
+        const status = (error as { statusCode?: number })?.statusCode
+        toast(t(status === 429 ? 'contact.rateLimit' : 'contact.error'), 'error')
     } finally {
         isSubmitting.value = false
     }
@@ -80,10 +86,12 @@ const handleSubmit = async () => {
                 <p class="text-base text-ink-500">{{ t('contact.submitted') }}</p>
             </div>
 
-            <form v-else class="mt-10 max-w-sm space-y-4" @submit.prevent="handleSubmit">
+            <form v-else :action="formEndpoint" method="POST" class="mt-10 max-w-sm space-y-4" @submit.prevent="handleSubmit">
                 <input
                     v-model="form.name"
                     type="text"
+                    name="name"
+                    :aria-label="t('contact.namePlaceholder')"
                     :placeholder="t('contact.namePlaceholder')"
                     required
                     class="block w-full border-0 border-b border-ink-200 bg-transparent pb-2 text-base text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
@@ -91,17 +99,22 @@ const handleSubmit = async () => {
                 <input
                     v-model="form.email"
                     type="email"
+                    name="email"
+                    aria-label="Email"
                     placeholder="Email"
                     required
                     class="block w-full border-0 border-b border-ink-200 bg-transparent pb-2 text-base text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
                 />
                 <textarea
                     v-model="form.message"
+                    name="message"
+                    :aria-label="t('contact.messagePlaceholder')"
                     rows="3"
                     :placeholder="t('contact.messagePlaceholder')"
                     required
                     class="block w-full resize-none border-0 border-b border-ink-200 bg-transparent pb-2 text-base text-ink-900 placeholder:text-ink-300 focus:border-ink-900 focus:outline-none dark:border-ink-800 dark:text-ink-100 dark:placeholder:text-ink-600 dark:focus:border-ink-100"
                 ></textarea>
+                <input v-model="form._gotcha" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="display: none" />
                 <button
                     type="submit"
                     :disabled="isSubmitting"

@@ -116,7 +116,8 @@
         "messagePlaceholder": "訊息",
         "submit": "送出",
         "submitting": "送出中...",
-        "error": "送出失敗，請直接寄信至 Email。"
+        "error": "送出失敗，請直接寄信至 Email。",
+        "rateLimit": "送出次數過多，請稍後再試。"
     },
     "treeQR": {
         "scrollDown": "Scroll Down",
