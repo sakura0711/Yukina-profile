@@ -42,7 +42,7 @@ const categories = computed(() => [
 
 <template>
     <section id="skills" class="pb-20">
-        <div class="mx-auto max-w-[80vw]">
+        <div class="mx-auto max-w-[80vw] md:max-w-[70vw]">
 
             <div class="mb-10 flex items-center gap-2">
                 <span class="material-symbols-outlined">extension</span>

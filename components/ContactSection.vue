@@ -45,7 +45,7 @@ const handleSubmit = async () => {
 
 <template>
     <section id="contact" class="pb-20">
-        <div class="mx-auto max-w-[80vw]">
+        <div class="mx-auto max-w-[80vw] md:max-w-[70vw]">
 
              <div class="mb-10 flex items-center gap-2">
                 <span class="material-symbols-outlined">alternate_email</span>

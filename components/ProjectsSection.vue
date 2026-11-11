@@ -61,9 +61,9 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
 <template>
     <section id="projects" class="pb-20">
-        <div class="mx-auto max-w-[80vw]">
+        <div class="mx-auto max-w-[80vw] md:max-w-[70vw]">
 
-            <div class="mb-10 flex items-center gap-2">
+            <div class="mb-10 flex items-center gap-4">
                 <span class="material-symbols-outlined">polymer</span>
                 <h2 class="font-serif text-2xl text-ink-900 dark:text-ink-100">{{ t('projects.title') }}</h2>
             </div>
@@ -74,11 +74,11 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
                     class="group cursor-pointer"
                     @click="open(project)"
                 >
-                    <div class="aspect-[16/9] overflow-hidden bg-ink-100 dark:bg-ink-800">
+                    <div class="aspect-[16/9] overflow-hidden bg-ink-100 dark:bg-ink-800 rounded-2xl">
                         <img
                             :src="project.image"
                             :alt="project.name"
-                            class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            class="h-full w-full object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
                             loading="lazy"
                             @error="($event.target as HTMLImageElement).style.display = 'none'"
                         />
