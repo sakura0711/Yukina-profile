@@ -8,7 +8,7 @@
         "menu": "Menu"
     },
     "hero": {
-        "scanQR": "Scan QR Code to visit GitHub"
+        "scanQR": "Scan Or click to visit GitHub"
     },
     "about": {
         "bio": "Graduated from I-Shou University, Dept. of Computer Science & Information Engineering, with 2+ years of frontend experience. Interned at ITRI in smart healthcare and co-founded Vamosnet. Skilled in Vue 3 / Nuxt development from scratch to deployment, certified ISO 27001 Lead Auditor."
@@ -120,7 +120,7 @@
     },
     "treeQR": {
         "scrollDown": "Scroll Down",
-        "scanQR": "Scan QR Code to visit GitHub"
+        "scanQR": "Scan Or click to visit GitHub"
     },
     "meta": {
         "title": "SIANG-JYUN's Portfolio",
