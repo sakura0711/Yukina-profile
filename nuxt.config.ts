@@ -84,6 +84,15 @@ export default defineNuxtConfig({
                     rel: 'stylesheet',
                     href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined'
                 }
+            ],
+            script: [
+                {
+                    src: 'https://www.googletagmanager.com/gtm.js?id=GTM-NZV2CSS5',
+                    async: true
+                },
+                {
+                    innerHTML: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());"
+                }
             ]
         }
     }
