@@ -43,6 +43,7 @@ export default defineNuxtConfig({
                 { name: 'author', content: 'SIANG-JYUN' }
             ],
             link: [
+                { rel: 'icon', type: 'image/x-icon', href: '/favicon_02.ico' },
                 { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
                 { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
                 {
